@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tags AI</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script src="{{url_for('static', filename='channelsAdd.js')}}" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+    <!-- <a href="/"><button>More simple options</button></a><br><br> -->
+
+    <img src="{{url_for('static', filename='logo.png')}}" style="width: 30%;">
+    <!-- Youtube query-->
+    <h1>Youtube Query</h1>
+
+    <form id="taskForm" action="/processSearchForYoutubeChannels" method="POST">
+      
+      <label for="YoutubeQuery">Text Input:</label>
+      <input type="text" name="YoutubeQuery" id="YoutubeQuery" required><br><br>
+      
+      <label for="PagesNumber">Number Input:</label>
+      <input type="number" name="PagesNumber" id="PagesNumber" required><br><br>
+      
+      <input type="submit" value="Submit">
+    </form>
+  
+    <!-- Youtube channels list-->
+    <h1>Name Youtube Channels</h1>
+    <form>
+        <input type="text" id="text-input" placeholder="Enter text">
+        <button type="button" class="add-button">Add</button>
+    </form>
+    <h2>Data:</h2>
+    <ul>
+        {% for item in channels %}
+            <li>{{ item[0] }} <button type="button" class="remove-button" data-index="{{ loop.index0 }}">Remove</button></li>
+        {% endfor %}
+    </ul>
+
+    <h1>Download set</h1>
+    <form id="taskForm" action="/processSearchForYoutubeVideos" method="POST">
+      <label for="PagesNumber">Number Input:</label>
+      <input type="number" name="PagesNumber" id="PagesNumber" required><br><br>
+      <input type="submit" value="Submit">
+    </form>
+
+    <h1>Dataset</h1>
+    <table>
+      {% for row in videos %}
+          <tr>
+              {% for value in row %}
+                  <td>{{ value }}</td>
+              {% endfor %}
+          </tr>
+      {% endfor %}
+    </table>
+
+    <h1>Clean data</h1>
+    <form id="taskForm" action="/processClean" method="POST">
+        <label for="DeleteColumnsWithOnly">Delete Columns With Only:</label>
+        <input type="number" name="DeleteColumnsWithOnly" id="DeleteColumnsWithOnly" value="4" required><br>
+
+        <label for="deleteRowsWithOnly">Delete Rows With Only:</label>
+        <input type="number" name="deleteRowsWithOnly" id="deleteRowsWithOnly" value="2" required><br>
+
+        <label for="OutlinerPrecise">Outliner Precise:</label>
+        <input type="number" name="OutlinerPrecise" id="OutlinerPrecise" value="2.0" required><br>
+
+        <input type="submit" value="Clean">
+      </form>
+
+    <h1>Calculate Accuracy</h1>
+    Precissly predicted amount of views using only tags and channel name
+    <form id="taskForm" action="/processCheckForAccuracy" method="POST">
+        <label for="AcceptError">Accept error:</label>
+        <input type="number" name="AcceptError" id="AcceptError" required><br><br>
+        <input type="submit" value="Submit">
+    </form>
+    <table>
+        {% for row in accuracy %}
+            <tr>
+                {% for value in row %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h1>Find tags</h1>
+    <form id="taskForm" action="/processTags" method="POST">
+        <label for="Amount">Amount:</label>
+        <input type="number" name="Amount" id="Amount" value="25" required><br><br>
+        <input type="submit" value="Submit">
+    </form>
+    <h2>Logistic Regression</h2>
+    <table>
+        {% for row in resultsLogisticRegression %}
+            <tr>
+                {% for value in row %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    <h2>Random Forest</h2>
+    <table>
+        {% for row in resultsRandomForest %}
+            <tr>
+                {% for value in row %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

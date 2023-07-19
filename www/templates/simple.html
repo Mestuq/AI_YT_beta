@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tags AI</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <a href="/advanced"><button>More advanced options</button></a><br><br>
+    <img src="{{url_for('static', filename='logo.png')}}" style="width: 30%;">
+
+    <form id="taskForm" action="/processAll" method="POST">
+        <label for="YoutubeQuery">Youtube Query</label>
+        <input type="text" name="YoutubeQuery" id="YoutubeQuery" required><br><br>
+        
+        <label for="YourChannel">Your Channel</label>
+        <input type="text" name="YourChannel" id="YourChannel" placeholder="Your Channel" required><br><br>
+
+        <label for="PagesNumberForQuerry">Pages number for querry</label>
+        <input type="number" name="PagesNumberForQuerry" id="PagesNumberForQuerry" value="50" required><br><br>
+
+        <label for="VideosNumberPerChannel">Videos number per channel</label>
+        <input type="number" name="VideosNumberPerChannel" id="VideosNumberPerChannel" value="50" required><br><br>
+
+        <label for="DeleteColumnsWithOnly">Delete Columns With Only:</label>
+        <input type="number" name="DeleteColumnsWithOnly" id="DeleteColumnsWithOnly" value="4" required><br><br>
+
+        <label for="DeleteRowsWithOnly">Delete Rows With Only:</label>
+        <input type="number" name="DeleteRowsWithOnly" id="DeleteRowsWithOnly" value="2" required><br><br>
+
+        <label for="OutlinerPrecise">Outliner Precise:</label>
+        <input type="number" name="OutlinerPrecise" id="OutlinerPrecise" value="2.0" required><br><br>
+
+        <label for="AcceptError">Round error to:</label>
+        <input type="number" name="AcceptError" id="AcceptError" value="50" required><br><br>
+
+        <label for="PrintAmountOfTags">Amount tags to be printed:</label>
+        <input type="number" name="PrintAmountOfTags" id="PrintAmountOfTags" value="25" required><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

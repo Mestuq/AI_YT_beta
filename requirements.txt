@@ -1,0 +1,7 @@
+Flask
+flask_socketio
+yt_dlp
+numpy
+pandas==1.5.3
+scikit-learn
+imblearn
