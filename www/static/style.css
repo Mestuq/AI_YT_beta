@@ -1,0 +1,21 @@
+.borderRound
+{
+    margin: 25px;
+    padding: 25px;
+    border: 1px solid #000000;
+    border-radius: 25px;
+    background-color: white;
+}
+.form-control
+{
+    width: auto;
+}
+.fixed-div 
+{
+    position: fixed;
+    top: 20px; /* You can adjust the top, right, bottom, left values as per your preference */
+    left: 20px;
+    padding: 10px;
+    width: 250px;
+    border-radius: 5px;
+}

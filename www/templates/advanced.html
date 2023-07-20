@@ -3,115 +3,195 @@
 <head>
     <title>Tags AI</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
     <script src="{{url_for('static', filename='channelsAdd.js')}}" type="text/javascript" charset="utf-8"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="{{url_for('static', filename='style.css')}}" rel="stylesheet">
 </head>
 <body>
-    <!-- <a href="/"><button>More simple options</button></a><br><br> -->
-
-    <img src="{{url_for('static', filename='logo.png')}}" style="width: 30%;">
+    <br/>
     <!-- Youtube query-->
-    <h1>Youtube Query</h1>
+    <div class="row">
+        <div class="fixed-div d-none d-xxl-block">
+            <nav id="navbar-example3" class="h-100 flex-column align-items-stretch pe-4 borderRound">
+                <nav class="nav nav-pills flex-column">
+                    <a class="nav-link" href="#YoutubeTags">Youtube Tags</a>
+                    <nav class="nav nav-pills flex-column">
+                        <a class="nav-link ms-3 my-1" href="#YoutubeQuery">Querry</a>
+                        <a class="nav-link ms-3 my-1" href="#ChannelList">Channels</a>
+                        <a class="nav-link ms-3 my-1" href="#DownloadSet">Get Videos</a>
+                        <nav class="nav nav-pills flex-column">
+                            <a class="nav-link ms-4 my-1" href="#DataSet">Dataset</a>
+                        </nav>
+                        <a class="nav-link ms-3 my-1" href="#CleanData">Clean Data</a>
+                        <a class="nav-link ms-3 my-1" href="#Accuracy">Accuracy</a>
+                        <a class="nav-link ms-3 my-1" href="#Generate">Generate</a>
+                        <nav class="nav nav-pills flex-column">
+                            <a class="nav-link ms-4 my-1" href="#Tags">Tags</a>
+                        </nav>
+                    </nav>
+                </nav>
+            </nav>
+        </div>
+    </div>
 
-    <form id="taskForm" action="/processSearchForYoutubeChannels" method="POST">
-      
-      <label for="YoutubeQuery">Text Input:</label>
-      <input type="text" name="YoutubeQuery" id="YoutubeQuery" required><br><br>
-      
-      <label for="PagesNumber">Number Input:</label>
-      <input type="number" name="PagesNumber" id="PagesNumber" required><br><br>
-      
-      <input type="submit" value="Submit">
-    </form>
-  
-    <!-- Youtube channels list-->
-    <h1>Name Youtube Channels</h1>
-    <form>
-        <input type="text" id="text-input" placeholder="Enter text">
-        <button type="button" class="add-button">Add</button>
-    </form>
-    <h2>Data:</h2>
-    <ul>
-        {% for item in channels %}
-            <li>{{ item[0] }} <button type="button" class="remove-button" data-index="{{ loop.index0 }}">Remove</button></li>
-        {% endfor %}
-    </ul>
+    <div class="container scrollspy-example" id="YoutubeTags" data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" tabindex="0">
+        <a href="/"><button class="btn btn-primary btn-sm">More simple options</button></a><br><br>
+        <div class="row">
+            <div class="mx-auto text-center">
+                <img class="img-fluid col-6" src="{{url_for('static', filename='logo.png')}}">
+            </div>
+        </div>
+        <div class="row" id="YoutubeQuery">
+            <div class="mx-auto borderRound">
+                <h1 class="text-center">Youtube Query</h1>
+                <form id="taskForm" action="/processSearchForYoutubeChannels" method="POST">
+                    <div class="form-floating">
+                        <input placeholder="Cute Cats" class="form-control form-control-lg" type="text" name="YoutubeQuery" id="YoutubeQuery" required>
+                        <label for="YoutubeQuery">Your youtube querry</label>
+                    </div>
+                    <div class="form-floating">
+                        <input placeholder="25" class="form-control form-control-lg" type="number" name="PagesNumber" id="PagesNumber" required>
+                        <label for="PagesNumber">Load number of pages:</label>
+                    </div>
+                    <input class="btn btn-primary btn-lg" type="submit" value="Search Channels">
+                </form>
+            </div>
+        </div>
 
-    <h1>Download set</h1>
-    <form id="taskForm" action="/processSearchForYoutubeVideos" method="POST">
-      <label for="PagesNumber">Number Input:</label>
-      <input type="number" name="PagesNumber" id="PagesNumber" required><br><br>
-      <input type="submit" value="Submit">
-    </form>
+        <!-- Youtube channels list-->
+        <div class="row" id="ChannelList">
+            <div class="mx-auto borderRound">
+                <h1 class="text-center">Name Youtube Channels</h1>
+                <form>
+                    <div class="form-floating">
+                        <input name="YourYoutubeChannel" placeholder="https://www.youtube.com/@YourChannelName" class="form-control form-control-lg" type="text" id="text-input" placeholder="Enter text">
+                        <label for="YourYoutubeChannel">https://www.youtube.com/@YourChannelName</label>
+                    </div>
+                    <button class="btn btn-primary btn-lg" type="button" class="add-button">Add</button>
+                </form>
+                <h2>Data:</h2>
+                <ul>
+                    {% for item in channels %}
+                        <li>{{ item[0] }} <button type="button" class="remove-button" data-index="{{ loop.index0 }}">Remove</button></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
 
-    <h1>Dataset</h1>
-    <table>
-      {% for row in videos %}
-          <tr>
-              {% for value in row %}
-                  <td>{{ value }}</td>
-              {% endfor %}
-          </tr>
-      {% endfor %}
-    </table>
+        <div class="row" id="DownloadSet">
+            <div class="mx-auto borderRound">
+                <h1 class="text-center">Download set</h1>
+                <form id="taskForm" action="/processSearchForYoutubeVideos" method="POST">
+                    <div class="form-floating">
+                        <input placeholder="25" class="form-control form-control-lg" type="number" name="PagesNumber" id="PagesNumber" required>
+                        <label for="PagesNumber">Search pages:</label>
+                    </div>
+                    <input class="btn btn-primary btn-lg" type="submit" value="Download Video info">
+                </form>
+            </div>
+        </div>
 
-    <h1>Clean data</h1>
-    <form id="taskForm" action="/processClean" method="POST">
-        <label for="DeleteColumnsWithOnly">Delete Columns With Only:</label>
-        <input type="number" name="DeleteColumnsWithOnly" id="DeleteColumnsWithOnly" value="4" required><br>
+        <div class="row" id="DataSet">
+            <div class="mx-auto borderRound">
+                <h1 class="text-center">Dataset</h1>
+                <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    See dataset
+                </button>
+                <div class="collapse" id="collapseExample">
+                    <table>
+                        {% for row in videos %}
+                            <tr>
+                                {% for value in row %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
 
-        <label for="deleteRowsWithOnly">Delete Rows With Only:</label>
-        <input type="number" name="deleteRowsWithOnly" id="deleteRowsWithOnly" value="2" required><br>
+        <div class="row" id="CleanData">
+            <div class="mx-auto borderRound">
+                <h1 class="text-center">Clean data</h1>
+                <form id="taskForm" action="/processClean" method="POST">
+                    <div class="form-floating">
+                        <input placeholder="4" class="form-control form-control-lg" type="number" name="DeleteColumnsWithOnly" id="DeleteColumnsWithOnly" value="4" required>
+                        <label for="DeleteColumnsWithOnly">Delete Columns With Only:</label>
+                    </div>
+                    <div class="form-floating">
+                        <input placeholder="2" class="form-control form-control-lg" type="number" name="deleteRowsWithOnly" id="deleteRowsWithOnly" value="2" required>
+                        <label for="deleteRowsWithOnly">Delete Rows With Only:</label>
+                    </div>
+                    <div class="form-floating">
+                        <input placeholder="2.0" class="form-control form-control-lg" type="number" name="OutlinerPrecise" id="OutlinerPrecise" value="2.0" required>
+                        <label for="OutlinerPrecise">Outliner Precise:</label>
+                    </div>
+                    <input class="btn btn-primary btn-lg" type="submit" value="Clean data">
+                </form>
+            </div>
+        </div>
 
-        <label for="OutlinerPrecise">Outliner Precise:</label>
-        <input type="number" name="OutlinerPrecise" id="OutlinerPrecise" value="2.0" required><br>
+        <div class="row" id="Accuracy">
+            <div class="mx-auto borderRound">
+                <h1 class="text-center">Calculate Accuracy</h1>
+                Precissly predicted amount of views using only tags and channel name
+                <form id="taskForm" action="/processCheckForAccuracy" method="POST">
+                    <div class="form-floating">
+                        <input placeholder="50" class="form-control form-control-lg" type="number" name="AcceptError" id="AcceptError" required>
+                        <label for="AcceptError">Error margin:</label>
+                    </div>
+                    <input class="btn btn-primary btn-lg" type="submit" value="Calculate error">
+                </form>
+                <table>
+                    {% for row in accuracy %}
+                        <tr>
+                            {% for value in row %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
 
-        <input type="submit" value="Clean">
-      </form>
-
-    <h1>Calculate Accuracy</h1>
-    Precissly predicted amount of views using only tags and channel name
-    <form id="taskForm" action="/processCheckForAccuracy" method="POST">
-        <label for="AcceptError">Accept error:</label>
-        <input type="number" name="AcceptError" id="AcceptError" required><br><br>
-        <input type="submit" value="Submit">
-    </form>
-    <table>
-        {% for row in accuracy %}
-            <tr>
-                {% for value in row %}
-                    <td>{{ value }}</td>
-                {% endfor %}
-            </tr>
-        {% endfor %}
-    </table>
-
-    <h1>Find tags</h1>
-    <form id="taskForm" action="/processTags" method="POST">
-        <label for="Amount">Amount:</label>
-        <input type="number" name="Amount" id="Amount" value="25" required><br><br>
-        <input type="submit" value="Submit">
-    </form>
-    <h2>Logistic Regression</h2>
-    <table>
-        {% for row in resultsLogisticRegression %}
-            <tr>
-                {% for value in row %}
-                    <td>{{ value }}</td>
-                {% endfor %}
-            </tr>
-        {% endfor %}
-    </table>
-    <h2>Random Forest</h2>
-    <table>
-        {% for row in resultsRandomForest %}
-            <tr>
-                {% for value in row %}
-                    <td>{{ value }}</td>
-                {% endfor %}
-            </tr>
-        {% endfor %}
-    </table>
-
+        <div class="row" id="Generate">
+            <div class="mx-auto borderRound">
+                <h1>Find tags</h1>
+                <form id="taskForm" action="/processTags" method="POST">
+                    <div class="form-floating">
+                        <input placeholder="25" class="form-control form-control-lg" type="number" name="Amount" id="Amount" value="25" required>
+                        <label for="Amount">Amount:</label>
+                    </div>
+                    <input class="btn btn-primary btn-lg" type="submit" value="Generate tags">
+                </form>
+            </div>
+        </div>
+        <div class="row" id="Tags">
+            <div class="mx-auto borderRound">
+                <h2>Logistic Regression</h2>
+                <table>
+                    {% for row in resultsLogisticRegression %}
+                        <tr>
+                            {% for value in row %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+                <h2>Random Forest</h2>
+                <table>
+                    {% for row in resultsRandomForest %}
+                        <tr>
+                            {% for value in row %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 </body>
 </html>

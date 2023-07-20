@@ -10,12 +10,12 @@ index_bp = Blueprint('index', __name__)
 
 # INDEX.HTML
 
-#@index_bp.route('/', methods=['GET', 'POST'])
+@index_bp.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('./simple.html')
 
-#@index_bp.route('/advanced', methods=['GET', 'POST'])
-@index_bp.route('/', methods=['GET', 'POST'])
+#@index_bp.route('/', methods=['GET', 'POST'])
+@index_bp.route('/advanced', methods=['GET', 'POST'])
 def advanced():
     channelsBP.load_channels()
     videosBP.load_videos()
