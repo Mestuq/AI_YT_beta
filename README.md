@@ -14,11 +14,6 @@
 This model is pretty slow. Need probably more than an hour per query to generate a raport.
 
 I know ChatGPT, can generate tags much faster and have much bigger database, but even of small accuracy of this project, from my expirience this project generates a little bit better result in views for me than from ChatGPT.
-
-|                                     Approximation to the 100 views                                     | Logistic Regression | Random Forest |
-| :----------------------------------------------------------------------------------------------------: | :-----------------: | :-----------: |
-| Precissly predicted amount of views<br />using only tags and channel name<br />by average. (Accuracy) |       ~ 20 %       |    ~ 15 %    |
-
 Accuracy is poor, because i dont have enaught information to work with. My data is really limited. Youtube studio have options to load clickrate, impressions etc. but this data is hidden from public.
 
 Because of that I dont think that, there are bad results.
