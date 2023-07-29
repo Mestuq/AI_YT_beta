@@ -1,3 +1,6 @@
+:root {
+    --primary: red;
+}
 .borderRound
 {
     margin: 25px;
@@ -6,10 +9,7 @@
     border-radius: 25px;
     background-color: white;
 }
-.form-control
-{
-    width: auto;
-}
+
 .fixed-div 
 {
     position: fixed;

@@ -27,8 +27,9 @@ def advanced():
     accuracy = load_csv("Accuracy.csv")
     resultsLogisticRegression = load_csv("LinearRegression.csv")
     resultsRandomForest = load_csv("RandomForest.csv")
+    listOfDownloadedChannels = videosBP.getListOfDownloadedChannels()
 
-    return render_template('./advanced.html', channels=channelsBP.channels,videos=videosBP.video_data, accuracy=accuracy, resultsLogisticRegression=resultsLogisticRegression, resultsRandomForest=resultsRandomForest)
+    return render_template('./advanced.html', channels=channelsBP.channels,videos=videosBP.video_data, accuracy=accuracy, resultsLogisticRegression=resultsLogisticRegression, resultsRandomForest=resultsRandomForest, DownloadedChannels=listOfDownloadedChannels)
 
 @socketio.on('connect', namespace='/test')
 def test_connect():

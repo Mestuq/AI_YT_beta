@@ -36,8 +36,9 @@ def CheckForAccuracy(AcceptError):
     yval = NewMerged_XY.iloc[:, -1].values.ravel()
 
     # Apply SMOTE for oversampling the minority class
-    smote = SMOTE(random_state=42)
-    Xval, yval = smote.fit_resample(Xval, yval)
+
+    #smote = SMOTE(random_state=42)
+    #Xval, yval = smote.fit_resample(Xval, yval)
 
     # LIST OF MODELS
     models = {LogisticRegression(),RandomForestClassifier()}
@@ -56,7 +57,7 @@ def CheckForAccuracy(AcceptError):
             for train_index, test_index in loo.split(Xval):
 
                 socketio.emit(str(modelNr)+" : "+str(test_index[0])+" / "+str(len(Xval)), namespace='/test')
-
+                print(str(modelNr)+" : "+str(test_index[0])+" / "+str(len(Xval)))
                 # print(str(test_index[0])+"/"+str(len(Xval)))
 
                 X_train, X_test = Xval.values[train_index], Xval.values[test_index]

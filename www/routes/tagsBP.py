@@ -44,54 +44,60 @@ def GetTags(Amount):
     variable_counts.columns = ['Variable', 'Count']
 
     # Apply SMOTE for oversampling the minority class
-    smote = SMOTE(random_state=42)
-    Xval, yval = smote.fit_resample(Xval, yval)
+    
+    #smote = SMOTE(random_state=42)
+    #Xval, yval = smote.fit_resample(Xval, yval)
 
     # LOGICAL REGRESSION -------------------------------------------------------------
 
     # LOGICAL REGRESSIONS TAGS COEFFICIENTS
-    model = LogisticRegression()
-    model.fit(Xval, yval)
+    try:
+        model = LogisticRegression()
+        model.fit(Xval, yval)
 
-    # Retrieve the coefficients from the trained model
-    coefficients = model.coef_[0]
+        # Retrieve the coefficients from the trained model
+        coefficients = model.coef_[0]
 
-    # Create a DataFrame to store the variable names and coefficients
-    coefficients_df = pd.DataFrame({'Variable': Xval.columns, 'Coefficient': coefficients})
+        # Create a DataFrame to store the variable names and coefficients
+        coefficients_df = pd.DataFrame({'Variable': Xval.columns, 'Coefficient': coefficients})
 
-    # Merge the variable counts with the coefficients DataFrame
-    coefficients_df = pd.merge(coefficients_df, variable_counts, on='Variable')
+        # Merge the variable counts with the coefficients DataFrame
+        coefficients_df = pd.merge(coefficients_df, variable_counts, on='Variable')
 
-    # Sort the coefficients by magnitude
-    coefficients_df = coefficients_df.sort_values(by='Coefficient', ascending=False)
+        # Sort the coefficients by magnitude
+        coefficients_df = coefficients_df.sort_values(by='Coefficient', ascending=False)
 
-    # Save result
-    coefficients_df.head(Amount).to_csv('LinearRegression.csv', encoding='utf-8', index=False)
+        # Save result
+        coefficients_df.head(Amount).to_csv('LinearRegression.csv', encoding='utf-8', index=False)
+    except Exception as e:
+        print(e)
 
     # RANDOM FOREST -------------------------------------------------------------
 
-    # Create a random forest classifier
-    model = RandomForestClassifier()
-    model.fit(Xval, yval)
+    try:
+        # Create a random forest classifier
+        model = RandomForestClassifier()
+        model.fit(Xval, yval)
 
-    # Get feature importances
-    feature_importances = model.feature_importances_
-    feature_names = Xval.columns
-    top_k_indices = np.argsort(feature_importances)[-Amount:]
-    top_k_feature_names = [feature_names[i] for i in top_k_indices]
+        # Get feature importances
+        feature_importances = model.feature_importances_
+        feature_names = Xval.columns
+        top_k_indices = np.argsort(feature_importances)[-Amount:]
+        top_k_feature_names = [feature_names[i] for i in top_k_indices]
 
 
-    # ----- COUNTING APPERIANCES FOR BETTER PREVIEW
-    top_k_feature_names_pd = pd.DataFrame(top_k_feature_names)
-    top_k_feature_names_pd = top_k_feature_names_pd.rename(columns={0: 'Variable'})
+        # ----- COUNTING APPERIANCES FOR BETTER PREVIEW
+        top_k_feature_names_pd = pd.DataFrame(top_k_feature_names)
+        top_k_feature_names_pd = top_k_feature_names_pd.rename(columns={0: 'Variable'})
 
-    # CONNECT WITH COUNTING
-    top_k_feature_names_pd = pd.merge(top_k_feature_names_pd, variable_counts, on='Variable')
-    
+        # CONNECT WITH COUNTING
+        top_k_feature_names_pd = pd.merge(top_k_feature_names_pd, variable_counts, on='Variable')
+        
 
-    # Save results
-    top_k_feature_names_pd.to_csv('RandomForest.csv', encoding='utf-8', index=False)
-
+        # Save results
+        top_k_feature_names_pd.to_csv('RandomForest.csv', encoding='utf-8', index=False)
+    except Exception as e:
+        print(e)
     # ------------------------------------------------------------------------------
 
     # FINISHING PROCESS

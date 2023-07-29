@@ -6,6 +6,7 @@ from threading import Thread, Lock
 import csv
 import yt_dlp
 import pandas as pd
+import os
 
 from routes import channelsBP
 
@@ -37,6 +38,16 @@ def processSearchForYoutubeVideos():
         socketio.start_background_task(searchForYoutubeVideos,PagesNumber)
     return render_template('process.html')
 
+def getListOfDownloadedChannels():
+    file_names_without_extension = []
+    for file_name in os.listdir("downloaded/"):
+        # Check if it's a file and not a directory
+        if os.path.isfile(os.path.join("downloaded/", file_name)):
+            # Split the file name and extension
+            file_name_without_extension, file_extension = os.path.splitext(file_name)
+            file_names_without_extension.append(file_name_without_extension)
+    return file_names_without_extension
+
 def searchForYoutubeVideos(PagesNumber):
     print("=============STARTING==============")
     # PREPARING DATA
@@ -51,9 +62,10 @@ def searchForYoutubeVideos(PagesNumber):
     }
 
     # DOWNLOADING VIDEO DATA
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        try:
-            for count,url in enumerate(channelsBP.channels):
+    for count,url in enumerate(channelsBP.channels):
+        user_videos = []
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            try:
                 print(f'-------------------Processing step {count+1}/{len(channelsBP.channels)}:({url[0]})')
                 socketio.emit('progress', {'data': f'Processing step {count+1}/{len(channelsBP.channels)}:({url[0]})'}, namespace='/test')
 
@@ -73,16 +85,22 @@ def searchForYoutubeVideos(PagesNumber):
                                 #'PhrasesDescription': ""
                             }
                             video_data.append(video_info)
+
+                            user_videos.append(video_info)
+                            
+                        #backup = pd.DataFrame(video_data)
+                        #backup.to_csv('backup.csv', index=False)
                         
-                        backup = pd.DataFrame(video_data)
-                        backup.to_csv('backup.csv', index=False)
-            df = pd.DataFrame(video_data) 
-            df.to_csv('videos.csv', index=False)
+                    user_videos = pd.DataFrame(user_videos) 
+                    user_videos.to_csv("downloaded/@"+url[0].split("@")[-1]+'.csv', index=False)
+            except Exception as e:
+                print(f'Error processing URL: {url}')
+                print(e)
+    #df = pd.DataFrame(video_data) 
+    #df.to_csv('videos.csv', index=False)
             #return df
 
-        except Exception as e:
-            print(f'Error processing URL: {url}')
-            print(e)
+
     
     # SAVEING DATA 
     

@@ -14,12 +14,13 @@
         <div class="fixed-div d-none d-xxl-block">
             <nav id="navbar-example3" class="h-100 flex-column align-items-stretch pe-4 borderRound">
                 <nav class="nav nav-pills flex-column">
-                    <a class="nav-link" href="#YoutubeTags">Youtube Tags</a>
+                    <a class="nav-link" href="#YoutubeTags">YOUTUBE TAGS</a>
                     <nav class="nav nav-pills flex-column">
                         <a class="nav-link ms-3 my-1" href="#YoutubeQuery">Querry</a>
                         <a class="nav-link ms-3 my-1" href="#ChannelList">Channels</a>
                         <a class="nav-link ms-3 my-1" href="#DownloadSet">Get Videos</a>
                         <nav class="nav nav-pills flex-column">
+                            <a class="nav-link ms-4 my-1" href="#Concat">Concat</a>
                             <a class="nav-link ms-4 my-1" href="#DataSet">Dataset</a>
                         </nav>
                         <a class="nav-link ms-3 my-1" href="#CleanData">Clean Data</a>
@@ -67,12 +68,20 @@
                         <input name="YourYoutubeChannel" placeholder="https://www.youtube.com/@YourChannelName" class="form-control form-control-lg" type="text" id="text-input" placeholder="Enter text">
                         <label for="YourYoutubeChannel">https://www.youtube.com/@YourChannelName</label>
                     </div>
-                    <button class="btn btn-primary btn-lg" type="button" class="add-button">Add</button>
+                    <button class="add-button btn btn-primary btn-lg" type="button">Add</button>
                 </form>
                 <h2>Data:</h2>
                 <ul>
                     {% for item in channels %}
-                        <li>{{ item[0] }} <button type="button" class="remove-button" data-index="{{ loop.index0 }}">Remove</button></li>
+                        <li>
+                            <button type="button" class="remove-button btn btn-primary btn-sm" data-index="{{ loop.index0 }}">X</button> 
+                            <a href=" {{ item[0] }} " target="_blank">{{ item[0].split('/')[-1] }}</a>
+                            {% if item[0].split('/')[-1] in DownloadedChannels %} 
+                                <span style="color: green;">(User is in the list)</span>
+                            {% else %}
+                                <span style="color: red;">(User is not in the list)</span>
+                            {% endif %}
+                        </li>
                     {% endfor %}
                 </ul>
             </div>
@@ -87,6 +96,15 @@
                         <label for="PagesNumber">Search pages:</label>
                     </div>
                     <input class="btn btn-primary btn-lg" type="submit" value="Download Video info">
+                </form>
+            </div>
+        </div>
+
+        <div class="row" id="Concat">
+            <div class="mx-auto borderRound">
+                <h1 class="text-center">Concat channels</h1>
+                <form id="taskForm" action="/concatChannels" method="POST">
+                    <input class="btn btn-primary btn-lg" type="submit" value="Concat">
                 </form>
             </div>
         </div>
