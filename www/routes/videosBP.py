@@ -35,7 +35,8 @@ def processSearchForYoutubeVideos():
         return render_template('busy.html')
     else:
         PagesNumber = request.form.get('PagesNumber')
-        socketio.start_background_task(searchForYoutubeVideos,PagesNumber)
+        ReplaceCSV = request.form.get('ReplaceCSV')
+        socketio.start_background_task(searchForYoutubeVideos,PagesNumber,ReplaceCSV)
     return render_template('process.html')
 
 def getListOfDownloadedChannels():
@@ -48,7 +49,38 @@ def getListOfDownloadedChannels():
             file_names_without_extension.append(file_name_without_extension)
     return file_names_without_extension
 
-def searchForYoutubeVideos(PagesNumber):
+@videos_bp.route('/concatChannels', methods=['POST'])
+def concatChannels():
+    selected_channels = []
+    form_data = request.form
+
+    for key, value in form_data.items():
+        if key != 'Concat' and key != 'Delete':
+            selected_channels.append(key)
+
+    if 'Concat' in form_data:
+        dataframes = []
+        for channel in selected_channels:
+            file_path = os.path.join('downloaded', f'{channel}.csv')
+            if os.path.exists(file_path):
+                df = pd.read_csv(file_path)
+                dataframes.append(df)
+        if dataframes:
+            concatenated_df = pd.concat(dataframes, ignore_index=True)
+            concatenated_df.to_csv('videos.csv', index=False)
+
+    elif 'Delete' in form_data:
+        for channel in selected_channels:
+            file_path = os.path.join('downloaded', f'{channel}.csv')
+            if os.path.exists(file_path):
+                os.remove(file_path)
+
+    return redirect(url_for('index.advanced')) 
+
+
+    
+
+def searchForYoutubeVideos(PagesNumber,ReplaceCSV):
     print("=============STARTING==============")
     # PREPARING DATA
     channelsBP.load_channels()
@@ -64,38 +96,39 @@ def searchForYoutubeVideos(PagesNumber):
     # DOWNLOADING VIDEO DATA
     for count,url in enumerate(channelsBP.channels):
         user_videos = []
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            try:
-                print(f'-------------------Processing step {count+1}/{len(channelsBP.channels)}:({url[0]})')
-                socketio.emit('progress', {'data': f'Processing step {count+1}/{len(channelsBP.channels)}:({url[0]})'}, namespace='/test')
+        if (ReplaceCSV == "on") or (not os.path.exists("downloaded/@"+url[0].split("@")[-1]+'.csv')):
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                try:
+                    print(f'-------------------Processing step {count+1}/{len(channelsBP.channels)}:({url[0]})')
+                    socketio.emit('progress', {'data': f'Processing step {count+1}/{len(channelsBP.channels)}:({url[0]})'}, namespace='/test')
 
-                info = ydl.extract_info(url[0]+"/videos", download=False)
-                if info is not None and hasattr(info, 'get'):
-                    videos = info.get('entries')
+                    info = ydl.extract_info(url[0]+"/videos", download=False)
+                    if info is not None and hasattr(info, 'get'):
+                        videos = info.get('entries')
 
-                    for video in videos:
-                        if video is not None and hasattr(info, 'get'):
-                            video_info = {
-                                'Channel': normalizeText("(uploader)"+video.get('uploader', '')),
-                                'Title': video.get('title', '').lower(),
-                                'Views': video.get('view_count', ''),
-                                #'Description': video.get('description', '').lower(),
-                                'Tags': normalizeText(','.join(["(tag)" + tag for tag in video.get('tags', [])])),
-                                #'PhrasesTitle': "",
-                                #'PhrasesDescription': ""
-                            }
-                            video_data.append(video_info)
+                        for video in videos:
+                            if video is not None and hasattr(info, 'get'):
+                                video_info = {
+                                    'Channel': normalizeText("(uploader)"+video.get('uploader', '')),
+                                    'Title': video.get('title', '').lower(),
+                                    'Views': video.get('view_count', ''),
+                                    #'Description': video.get('description', '').lower(),
+                                    'Tags': normalizeText(','.join(["(tag)" + tag for tag in video.get('tags', [])])),
+                                    #'PhrasesTitle': "",
+                                    #'PhrasesDescription': ""
+                                }
+                                video_data.append(video_info)
 
-                            user_videos.append(video_info)
+                                user_videos.append(video_info)
+                                
+                            #backup = pd.DataFrame(video_data)
+                            #backup.to_csv('backup.csv', index=False)
                             
-                        #backup = pd.DataFrame(video_data)
-                        #backup.to_csv('backup.csv', index=False)
-                        
-                    user_videos = pd.DataFrame(user_videos) 
-                    user_videos.to_csv("downloaded/@"+url[0].split("@")[-1]+'.csv', index=False)
-            except Exception as e:
-                print(f'Error processing URL: {url}')
-                print(e)
+                        user_videos = pd.DataFrame(user_videos) 
+                        user_videos.to_csv("downloaded/@"+url[0].split("@")[-1]+'.csv', index=False)
+                except Exception as e:
+                    print(f'Error processing URL: {url}')
+                    print(e)
     #df = pd.DataFrame(video_data) 
     #df.to_csv('videos.csv', index=False)
             #return df
