@@ -78,7 +78,7 @@
             </form>
             <h2>Data:</h2>
             {% if channels %}
-                <ul id="ChannelListContent">
+                <ul id="ChannelListContent" class="columns-container">
                     {% for item in channels %}
                         <li>
                             <button type="button" class="btn-close remove-button" aria-label="Close" data-index="{{ loop.index0 }}"></button> 
@@ -126,15 +126,17 @@
             <form class="row g-2" id="taskForm" action="/concatChannels" method="POST">
                 <h2>List of downloaded data:</h2>
                 {% if DownloadedChannels %}
-                    <div>
-                        {% for item in DownloadedChannels %}
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="{{ item }}" name="{{ item }}" checked>
-                            <label class="form-check-label" for="{{ item }}">
-                                {{ item }}
-                            </label>
+                    <div class="columns-container margin20pxBottom">
+                        <div>
+                            {% for item in DownloadedChannels %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="{{ item }}" name="{{ item }}" checked>
+                                <label class="form-check-label" for="{{ item }}">
+                                    {{ item }}
+                                </label>
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
                     </div>
                 {% else %}
                     <h3>There is no downloaded channels.</h3>
