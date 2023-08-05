@@ -26,14 +26,16 @@
                         <a class="nav-link ms-3 my-1" href="#ChannelList">Channels</a>
                         <a class="nav-link ms-3 my-1" href="#DownloadSet">Get Videos</a>
                         <nav class="nav nav-pills flex-column">
-                            <a class="nav-link ms-4 my-1" href="#Concat">Concat</a>
-                            <a class="nav-link ms-4 my-1" href="#DataSet">Dataset</a>
+                            <a class="nav-link ms-4 my-1" href="#Concat">&#x25CF; Concat</a>
+                            <a class="nav-link ms-4 my-1" href="#DataSet">&#x25CF; Dataset</a>
                         </nav>
                         <a class="nav-link ms-3 my-1" href="#CleanData">Clean Data</a>
                         <a class="nav-link ms-3 my-1" href="#Accuracy">Accuracy</a>
                         <a class="nav-link ms-3 my-1" href="#Generate">Generate</a>
                         <nav class="nav nav-pills flex-column">
-                            <a class="nav-link ms-4 my-1" href="#Tags">Tags</a>
+                            <!--<a class="nav-link ms-4 my-1" href="#Tags">Tags</a>-->
+                            <a class="nav-link ms-4 my-1" href="#LogisticRegression">&#x25CF; Logistic Regression</a>
+                            <a class="nav-link ms-4 my-1" href="#RandomForest">&#x25CF; Random Forest</a>
                         </nav>
                     </nav>
                 </nav>
@@ -41,7 +43,7 @@
         </div>
     </div>
 
-    <div class="container scrollspy-example" id="YoutubeTags" data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" tabindex="0">
+    <div class="container" id="YoutubeTags" data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" tabindex="0">
         <div class="row">
             <div class="mx-auto text-center">
                 <img class="img-fluid col-6" src="{{url_for('static', filename='logo.png')}}">
@@ -242,7 +244,7 @@
             <div class="mx-auto borderRound">
                 <h1 class="text-center">Result</h1>
                 <h2>Logistic Regression</h2>
-                <table class="table table-striped">
+                <table id="LogisticRegression" class="table table-striped">
                     {% for row in resultsLogisticRegression %}
                         <tr>
                             {% for value in row %}
@@ -252,7 +254,7 @@
                     {% endfor %}
                 </table>
                 <h2>Random Forest</h2>
-                <table class="table table-striped">
+                <table id="RandomForest" class="table table-striped">
                     {% for row in resultsRandomForest %}
                         <tr>
                             {% for value in row %}

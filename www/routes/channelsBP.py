@@ -80,6 +80,8 @@ def processSearchForYoutubeChannels():
 
 def searchForYoutubeChannels(YoutubeQuery,PagesNumber):
     # PREPARING DATA
+    global progressInfo
+    progressInfo = 0
     global channels
     channels = []
     urlTest="https://www.youtube.com/results?search_query="+YoutubeQuery.replace(' ', '+')
