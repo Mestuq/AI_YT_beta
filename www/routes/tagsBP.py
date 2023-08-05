@@ -6,6 +6,7 @@ import pandas as pd
 import scipy as sc
 import numpy as np
 from threading import Thread, Lock
+import time
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
@@ -28,6 +29,7 @@ def processGetTags():
     return render_template('process.html')
 
 def GetTags(Amount):
+    time.sleep(1) # Waiting for client to load the website
     Amount = int(Amount)
 
     socketio.emit('Please wait...', namespace='/test')

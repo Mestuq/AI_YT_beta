@@ -6,6 +6,7 @@ import pandas as pd
 import scipy as sc
 import numpy as np
 from threading import Thread, Lock
+import time
 
 from routes import videosBP
 
@@ -25,6 +26,7 @@ def processClean():
     return render_template('process.html')
 
 def Clean(DeleteColumnsWithOnly,deleteRowsWithOnly,OutlinerPrecise):
+    time.sleep(1) # Waiting for client to load the website
     DeleteColumnsWithOnly = float(DeleteColumnsWithOnly)
     deleteRowsWithOnly = float(deleteRowsWithOnly)
     OutlinerPrecise = float(OutlinerPrecise)
@@ -112,3 +114,4 @@ def Clean(DeleteColumnsWithOnly,deleteRowsWithOnly,OutlinerPrecise):
     # FINISHING PROCESS
     search_lock.release()
     socketio.emit('finished', namespace='/test')
+    print("=============END==============")

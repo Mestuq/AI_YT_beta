@@ -7,6 +7,7 @@ import csv
 import yt_dlp
 import pandas as pd
 import os
+import time
 
 from routes import channelsBP
 
@@ -81,6 +82,7 @@ def concatChannels():
     
 
 def searchForYoutubeVideos(PagesNumber,ReplaceCSV):
+    time.sleep(1) # Waiting for client to load the website
     print("=============STARTING==============")
     # PREPARING DATA
     channelsBP.load_channels()

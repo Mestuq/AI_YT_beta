@@ -5,6 +5,7 @@ from app import app, socketio
 from threading import Thread, Lock
 import pandas as pd
 import csv
+import time
 
 from sklearn.model_selection import LeaveOneOut
 from sklearn.metrics import accuracy_score
@@ -28,6 +29,7 @@ def processCheckForAccuracy():
     return render_template('process.html')
 
 def CheckForAccuracy(AcceptError):
+    time.sleep(1) # Waiting for client to load the website
     AcceptError = float(AcceptError)
     socketio.emit('Loading data...', namespace='/test')
     # LOAD DATA

@@ -14,7 +14,7 @@ socket.on('progress', function(msg) {
 });
 
 socket.on('finished', function() {
-    window.location.href = '/';
+    window.history.back();
 });
 
 socket.on('disconnect', function() {

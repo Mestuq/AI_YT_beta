@@ -6,6 +6,7 @@ from threading import Thread, Lock
 import csv
 import os
 import sys 
+import time
 import yt_dlp
 
 channels_bp = Blueprint('channels', __name__)
@@ -79,6 +80,7 @@ def processSearchForYoutubeChannels():
     return render_template('process.html')
 
 def searchForYoutubeChannels(YoutubeQuery,PagesNumber):
+    time.sleep(1) # Waiting for client to load the website
     # PREPARING DATA
     global progressInfo
     progressInfo = 0
