@@ -26,12 +26,14 @@ def load_channels():
 
 @channels_bp.route('/addChannel', methods=['POST'])
 def add():
+    global channels
     text = request.form.get('text')
     if text:
-        channels.append([text])
         with open('channels.csv', 'a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow([text])
+            if [text] not in channels: # REMOVE DUPLICATES
+                writer.writerow([text])
+                channels.append(text)
     return jsonify({'success': True})
 
 @channels_bp.route('/removeChannel', methods=['POST'])

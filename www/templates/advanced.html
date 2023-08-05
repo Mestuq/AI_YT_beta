@@ -34,7 +34,9 @@
 <div class="container" id="YoutubeTags" data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" tabindex="0">
     <div class="row">
         <div class="mx-auto text-center">
-            <img class="img-fluid col-6" src="{{url_for('static', filename='logo.png')}}">
+            <a href="#YoutubeTags">
+                <img class="img-fluid col-6" src="{{url_for('static', filename='logo.png')}}">
+            </a>
         </div>
     </div>
     <div class="row" id="YoutubeQuery">
@@ -74,10 +76,10 @@
                 </div>
             </form>
             <h2>Data:</h2>
-            <ul>
+            <ul id="ChannelListContent">
                 {% for item in channels %}
                     <li>
-                        <button type="button" class="btn-close" aria-label="Close" data-index="{{ loop.index0 }}"></button> 
+                        <button type="button" class="btn-close remove-button" aria-label="Close" data-index="{{ loop.index0 }}"></button> 
                         <a href=" {{ item[0] }} " target="_blank">{{ item[0].split('/')[-1] }}</a>
                         {% if item[0].split('/')[-1] in DownloadedChannels %} 
                             <span style="color: green;">(Downloaded)</span>
