@@ -113,13 +113,11 @@ def searchForYoutubeChannels(YoutubeQuery,PagesNumber):
         info = ydl.extract_info(urlTest, download=False)
         for count, entry in enumerate(info['entries']):
             try:
-                channels.append(entry['uploader_url'])
+                if entry['uploader_url'] not in channels: # REMOVING DUPLICATES
+                    channels.append(entry['uploader_url'])
             except Exception as e:
                 print(f"Error occurred: {e}")
                 continue
-
-    # REMOVING DUPLICATES
-    channels = list(set(channels))
 
     # SAVEING
     with open(r'channels.csv', 'w') as fp:

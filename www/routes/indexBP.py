@@ -4,7 +4,7 @@ from app import app, socketio
 
 import csv
 
-from routes import videosBP,channelsBP
+from routes import videosBP,channelsBP,favoritesBP
 
 index_bp = Blueprint('index', __name__)
 
@@ -23,8 +23,16 @@ def advanced():
     resultsLogisticRegression = load_csv("LinearRegression.csv")
     resultsRandomForest = load_csv("RandomForest.csv")
     listOfDownloadedChannels = videosBP.getListOfDownloadedChannels()
+    favorites = favoritesBP.getFavorites()
 
-    return render_template('./advanced.html', channels=channelsBP.channels,videos=videosBP.video_data, accuracy=accuracy, resultsLogisticRegression=resultsLogisticRegression, resultsRandomForest=resultsRandomForest, DownloadedChannels=listOfDownloadedChannels)
+    return render_template('./advanced.html', 
+                           channels=channelsBP.channels,
+                           videos=videosBP.video_data, 
+                           accuracy=accuracy, 
+                           resultsLogisticRegression=resultsLogisticRegression, 
+                           resultsRandomForest=resultsRandomForest, 
+                           DownloadedChannels=listOfDownloadedChannels, 
+                           favorites=favorites)
 
 @socketio.on('connect', namespace='/test')
 def test_connect():

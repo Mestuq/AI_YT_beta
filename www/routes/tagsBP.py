@@ -72,6 +72,7 @@ def GetTags(Amount):
         # Save result
         coefficients_df.head(Amount).to_csv('LinearRegression.csv', encoding='utf-8', index=False)
     except Exception as e:
+        print("EXPECTION--------------------------------------------------")
         print(e)
 
     # RANDOM FOREST -------------------------------------------------------------
@@ -84,8 +85,12 @@ def GetTags(Amount):
         # Get feature importances
         feature_importances = model.feature_importances_
         feature_names = Xval.columns
-        top_k_indices = np.argsort(feature_importances)[-Amount:]
-        top_k_feature_names = [feature_names[i] for i in top_k_indices]
+
+        feature_df = pd.DataFrame({'Variable': feature_names, 'Importance': feature_importances})
+        sorted_feature_df = feature_df.sort_values(by='Importance', ascending=False)
+        top_k_feature_names = sorted_feature_df.head(Amount)
+
+        print(feature_importances)
 
 
         # ----- COUNTING APPERIANCES FOR BETTER PREVIEW
@@ -95,10 +100,10 @@ def GetTags(Amount):
         # CONNECT WITH COUNTING
         top_k_feature_names_pd = pd.merge(top_k_feature_names_pd, variable_counts, on='Variable')
         
-
         # Save results
         top_k_feature_names_pd.to_csv('RandomForest.csv', encoding='utf-8', index=False)
     except Exception as e:
+        print("EXPECTION--------------------------------------------------")
         print(e)
     # ------------------------------------------------------------------------------
 

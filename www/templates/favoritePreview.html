@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Collection{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row" id="Tags">
+        <div class="mx-auto borderRound">
+            <h1 class="text-center">Collection named "{{ request.args.get('name', 'name') }}"</h1>
+
+            <h2>Logistic Regression</h2>
+            {% if resultsLogisticRegression %}
+                <table id="LogisticRegression" class="table table-striped">
+                    {% for row in resultsLogisticRegression %}
+                        <tr>
+                            {% for value in row %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <h3>No Logistic Regression data available.</h3>
+            {% endif %}
+
+            <h2>Random Forest</h2>
+            {% if resultsRandomForest %}
+                <table id="RandomForest" class="table table-striped">
+                    {% for row in resultsRandomForest %}
+                        <tr>
+                            {% for value in row %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <h3>No Random Forest data available.</h3>
+            {% endif %}
+
+            <h2>Accuracy</h2>
+            {% if accuracy %}
+                <table class="table table-striped">
+                    {% for row in accuracy %}
+                        <tr>
+                            {% for value in row %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <h3>No accuracy data available.</h3>
+            {% endif %}
+            <br />
+            <button id="backButton" onclick="window.location.href = '/';" class="btn btn-primary btn-lg">Back</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

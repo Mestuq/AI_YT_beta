@@ -25,6 +25,7 @@
                         <a class="nav-link ms-3 my-1" href="#LogisticRegression">&#x25CF; Logistic Regression</a>
                         <a class="nav-link ms-3 my-1" href="#RandomForest">&#x25CF; Random Forest</a>
                     </nav>
+                    <a class="nav-link my-1" href="#SaveAs">Collection</a>
                 </nav>
             </nav>
         </nav>
@@ -76,19 +77,23 @@
                 </div>
             </form>
             <h2>Data:</h2>
-            <ul id="ChannelListContent">
-                {% for item in channels %}
-                    <li>
-                        <button type="button" class="btn-close remove-button" aria-label="Close" data-index="{{ loop.index0 }}"></button> 
-                        <a href=" {{ item[0] }} " target="_blank">{{ item[0].split('/')[-1] }}</a>
-                        {% if item[0].split('/')[-1] in DownloadedChannels %} 
-                            <span style="color: green;">(Downloaded)</span>
-                        {% else %}
-                            <span style="color: red;">(Not downloaded)</span>
-                        {% endif %}
-                    </li> 
-                {% endfor %}
-            </ul>
+            {% if channels %}
+                <ul id="ChannelListContent">
+                    {% for item in channels %}
+                        <li>
+                            <button type="button" class="btn-close remove-button" aria-label="Close" data-index="{{ loop.index0 }}"></button> 
+                            <a href=" {{ item[0] }} " target="_blank">{{ item[0].split('/')[-1] }}</a>
+                            {% if item[0].split('/')[-1] in DownloadedChannels %} 
+                                <span style="color: green;">(Downloaded)</span>
+                            {% else %}
+                                <span style="color: red;">(Not downloaded)</span>
+                            {% endif %}
+                        </li> 
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <h3>Channel list is empty.</h3>
+            {% endif %}
         </div>
     </div>
 
@@ -120,16 +125,20 @@
             <h1 class="text-center">Concat channels</h1>
             <form class="row g-2" id="taskForm" action="/concatChannels" method="POST">
                 <h2>List of downloaded data:</h2>
-                <div>
-                    {% for item in DownloadedChannels %}
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="{{ item }}" name="{{ item }}" checked>
-                        <label class="form-check-label" for="{{ item }}">
-                            {{ item }}
-                        </label>
+                {% if DownloadedChannels %}
+                    <div>
+                        {% for item in DownloadedChannels %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="{{ item }}" name="{{ item }}" checked>
+                            <label class="form-check-label" for="{{ item }}">
+                                {{ item }}
+                            </label>
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-                </div>
+                {% else %}
+                    <h3>There is no downloaded channels.</h3>
+                {% endif %}
                 <div class="col-md">
                     <input class="btn btn-primary btn-lg w100" type="submit" value="Concat" name="Concat">
                 </div>
@@ -143,20 +152,24 @@
     <div class="row" id="DataSet">
         <div class="mx-auto borderRound">
             <h1 class="text-center">Dataset</h1>
-            <button class="btn btn-outline-primary btn-lg w100" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                Show/Hide
-            </button>
-            <div class="collapse" id="collapseExample">
-                <table class="table table-striped">
-                    {% for row in videos %}
-                        <tr>
-                            {% for value in row %}
-                                <td>{{ value }}</td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </table>
-            </div>
+            {% if videos %}
+                <button class="btn btn-outline-primary btn-lg w100" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Show/Hide
+                </button>
+                <div class="collapse" id="collapseExample">
+                    <table class="table table-striped">
+                        {% for row in videos %}
+                            <tr>
+                                {% for value in row %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% else %}
+                <h3>Your dataset is empty.</h3>
+            {% endif %}
         </div>
     </div>
 
@@ -202,15 +215,19 @@
                     <input class="btn btn-primary btn-lg h100 w100" type="submit" value="Calculate error">
                 </div>
             </form>
-            <table class="table table-striped">
-                {% for row in accuracy %}
-                    <tr>
-                        {% for value in row %}
-                            <td>{{ value }}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </table>
+            {% if accuracy %}
+                <table class="table table-striped">
+                    {% for row in accuracy %}
+                        <tr>
+                            {% for value in row %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <h3>No accuracy data available.</h3>
+            {% endif %}
         </div>
     </div>
 
@@ -234,26 +251,70 @@
         <div class="mx-auto borderRound">
             <h1 class="text-center">Result</h1>
             <h2>Logistic Regression</h2>
-            <table id="LogisticRegression" class="table table-striped">
-                {% for row in resultsLogisticRegression %}
-                    <tr>
-                        {% for value in row %}
-                            <td>{{ value }}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </table>
+            {% if resultsLogisticRegression %}
+                <table id="LogisticRegression" class="table table-striped">
+                    {% for row in resultsLogisticRegression %}
+                        <tr>
+                            {% for value in row %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <h3>No Logistic Regression data available.</h3>
+            {% endif %}
+
             <h2>Random Forest</h2>
-            <table id="RandomForest" class="table table-striped">
-                {% for row in resultsRandomForest %}
-                    <tr>
-                        {% for value in row %}
-                            <td>{{ value }}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </table>
+            {% if resultsRandomForest %}
+                <table id="RandomForest" class="table table-striped">
+                    {% for row in resultsRandomForest %}
+                        <tr>
+                            {% for value in row %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <h3>No Random Forest data available.</h3>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row" id="SaveAs">
+        <div class="mx-auto borderRound">
+            <h1 class="text-center">Favorite</h1>
+            <form class="row g-2" id="taskForm" action="/FavoriteSaveAs" method="GET">
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input placeholder="My favorite tags" class="form-control form-control-lg" type="text" name="name" id="FavoriteTags" autocomplete="nope" required>
+                        <label for="FavoriteTags">My favorite tags</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input class="btn btn-primary btn-lg w100 h100" type="submit" value="Add">
+                    </div>
+                </div>
+            </form>
+            <h2>Saved collections:</h2>
+            {% if favorites %}
+                <ul id="Favorites">
+                    {% for item in favorites %}
+                        {% set encoded_name = item|urlencode %}
+                        <li>
+                            <a href="favoritesDelete?name={{ encoded_name }} ">
+                                <button type="button" class="btn-close" aria-label="Close"></button> 
+                            </a>
+                            <a href="favorites?name={{ encoded_name }} ">{{ item }}</a>
+                        </li> 
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <h3>You have not saved any favorites yet.</h3>
+            {% endif %}
         </div>
     </div>
 </div>
+<script src="{{url_for('static', filename='saveScroll.js')}}" type="text/javascript" charset="utf-8"></script>
 {% endblock %}
