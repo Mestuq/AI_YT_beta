@@ -26,13 +26,13 @@ def processClean():
         socketio.start_background_task(Clean,DeleteColumnsWithOnly,deleteRowsWithOnly,OutlinerPrecise)
     return render_template('process.html')
 
-def generateHistogram(data,src):
+def generateHistogram(data,src,tagsNumberForDescription):
     plt.tight_layout()  # Adjust the padding between the plot and the labels
     plt.figure(figsize=(10, 6))  # Adjust the figure size to avoid overlapping labels
     plt.xticks(rotation=45)  # Rotate x-axis labels by 45 degrees for better readability
     
     plt.hist(data, bins=25, color='skyblue', edgecolor='black') 
-    plt.title('Histogram '+src+" ("+str(len(data))+" entries)")
+    plt.title('Histogram '+src+" ("+str(len(data))+" videos, "+str(tagsNumberForDescription)+" tags)")
     plt.xlabel(src)
     plt.ylabel('Frequency')
     
@@ -66,20 +66,27 @@ def Clean(DeleteColumnsWithOnly,deleteRowsWithOnly,OutlinerPrecise):
     Y = Y.rename(columns={0: 'views'})
     Y['views'] = Y['views'].astype('int64') 
 
-    # GENERATE HISTOGRAM
-    generateHistogram(Y['views'].values,'Views before')
-
     # GET LIST OF ALL TAGS
     socketio.emit('progress', {'data':'List of keywords'}, namespace='/test')
     keywords_series = X['keywords'].str.split().explode().unique()
 
+    # GENERATE HISTOGRAM
+    generateHistogram(Y['views'].values,'Views before',len(keywords_series))
+
+
+
     # BOOLEAN TABLE 
     socketio.emit('progress', {'data':'Generating boolean table'}, namespace='/test')
     X_transformed = pd.DataFrame(index=range(len(X)), columns=keywords_series)
-    for row, keywords in X.iterrows():
-        for column in keywords_series:
-            if column in keywords['keywords']:
+
+    for row, keywords in X.iterrows(): # row -> index, keywords -> bool
+        for column in keywords_series: # column -> every possible tag
+            keywordsExploded = keywords['keywords'].split()
+            #print(keywordsExploded)
+            if column in keywordsExploded:
                 X_transformed.loc[int(row), str(column)] = True
+            #if column in keywords['keywords']: #
+            #    X_transformed.loc[int(row), str(column)] = True
     X_transformed = X_transformed.fillna(False)
     X_transformed = X_transformed[1:]
 
@@ -99,17 +106,9 @@ def Clean(DeleteColumnsWithOnly,deleteRowsWithOnly,OutlinerPrecise):
     filtered_z_scores = (abs_z_scores < OutlinerPrecise).all(axis=1) #kind of mask
     NewMerged_XY = merged_XY[filtered_z_scores]
     
-    
-
     # DEVIDE X AND Y ONCE MORE
     X_transformed = NewMerged_XY.iloc[:, :-1]
     Y = pd.DataFrame(NewMerged_XY.iloc[:, -1])
-
-    # DELETE ALL COLUMNS(TAGS) WITH LESS THAN GIVEN NUMBER
-    socketio.emit('progress', {'data':'Deleting columns'}, namespace='/test')
-    counts = X_transformed.sum()
-    columns_to_delete = counts[counts < DeleteColumnsWithOnly].index
-    X_transformed = X_transformed.drop(columns=columns_to_delete)
 
     # REMOVE ROWS (VIDEOS) WITH THE SMALLEST AMOUNT OF TAGS (OR WITHOUT)
     socketio.emit('progress', {'data':'Deleting rows'}, namespace='/test')
@@ -118,8 +117,14 @@ def Clean(DeleteColumnsWithOnly,deleteRowsWithOnly,OutlinerPrecise):
     X_transformed = X_transformed.drop(rows_to_delete)
     Y = Y.drop(rows_to_delete)
 
+    # DELETE ALL COLUMNS(TAGS) WITH LESS THAN GIVEN NUMBER
+    socketio.emit('progress', {'data':'Deleting columns'}, namespace='/test')
+    counts = X_transformed.sum()
+    columns_to_delete = counts[counts < DeleteColumnsWithOnly].index
+    X_transformed = X_transformed.drop(columns=columns_to_delete)
+
     # GENERATE HISTOGRAM
-    generateHistogram(Y['views'],'Views after')
+    generateHistogram(Y['views'],'Views after',len(X_transformed.columns))
 
     # MERGEING AND SAVEING TO FILE
     socketio.emit('progress', {'data':'Saveing'}, namespace='/test')

@@ -9,4 +9,6 @@ function runFunction()
     localStorage.setItem('saveScroll', $(window).scrollTop());
 }
 
-const t = setInterval(runFunction, 500);
+$(document).ready(function() {
+    const t = setInterval(runFunction, 500);
+});
