@@ -98,15 +98,6 @@ ul li
     height: 25px;
 }
 
-.w100
-{
-    width: 100%;
-}
-.h100
-{
-    height: 100%;
-}
-
 .columns-container 
 {
     column-count: 3;

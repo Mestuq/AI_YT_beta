@@ -53,8 +53,12 @@
                 <h3>No accuracy data available.</h3>
             {% endif %}
             <br />
-            <button id="backButton" onclick="window.location.href = '/';" class="btn btn-primary btn-lg">Back</button>
+            <button id="backButton" onclick="window.location.href = '/';" class="btn btn-primary btn-lg">Go back</button>
         </div>
     </div>
 </div>
+
+<script src="{{url_for('static', filename='replaceUnderscore.js')}}" type="text/javascript" charset="utf-8"></script>
+<script src="{{url_for('static', filename='badgeAutomaticAssign.js')}}" type="text/javascript" charset="utf-8"></script>
+
 {% endblock %}

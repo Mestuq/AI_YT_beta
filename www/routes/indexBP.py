@@ -24,10 +24,10 @@ def advanced():
     resultsRandomForest = load_csv("RandomForest.csv")
     listOfDownloadedChannels = videosBP.getListOfDownloadedChannels()
     favorites = favoritesBP.getFavorites()
-
+    videosSorted =sorted(videosBP.video_data, key=lambda x: int(x[2]) if x[2].isdigit() else float('inf'), reverse=True)
     return render_template('./advanced.html', 
                            channels=channelsBP.channels,
-                           videos=videosBP.video_data, 
+                           videos=videosSorted,
                            accuracy=accuracy, 
                            resultsLogisticRegression=resultsLogisticRegression, 
                            resultsRandomForest=resultsRandomForest, 

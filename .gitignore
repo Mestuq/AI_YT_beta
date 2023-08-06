@@ -1,3 +1,5 @@
 *.csv
 profile_report.html
 *.pyc
+www/static/Views before.png
+www/static/Views after.png

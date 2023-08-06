@@ -32,8 +32,6 @@ def GetTags(Amount):
     time.sleep(1) # Waiting for client to load the website
     Amount = int(Amount)
 
-    socketio.emit('Please wait...', namespace='/test')
-
     # LOAD DATA
     NewMerged_XY = pd.read_csv('TrainingData.csv')
 
@@ -54,7 +52,8 @@ def GetTags(Amount):
 
     # LOGICAL REGRESSIONS TAGS COEFFICIENTS
     try:
-        model = LogisticRegression()
+        socketio.emit('progress', {'data':'Logistic Regression'}, namespace='/test')
+        model = LogisticRegression(solver='lbfgs', max_iter=1000)
         model.fit(Xval, yval)
 
         # Retrieve the coefficients from the trained model
@@ -78,6 +77,7 @@ def GetTags(Amount):
     # RANDOM FOREST -------------------------------------------------------------
 
     try:
+        socketio.emit('progress', {'data':'Random Forest Classifier'}, namespace='/test')
         # Create a random forest classifier
         model = RandomForestClassifier()
         model.fit(Xval, yval)

@@ -19,7 +19,7 @@ accuracy_bp = Blueprint('accuracy', __name__)
 search_lock = Lock()
 
 # SEARCH FOR ACCURACY MODEL
-@app.route('/processCheckForAccuracy', methods=['POST'])
+@accuracy_bp.route('/processCheckForAccuracy', methods=['POST'])
 def processCheckForAccuracy():
     if not search_lock.acquire(blocking=False):
         return render_template('busy.html')
@@ -31,7 +31,7 @@ def processCheckForAccuracy():
 def CheckForAccuracy(AcceptError):
     time.sleep(1) # Waiting for client to load the website
     AcceptError = float(AcceptError)
-    socketio.emit('Loading data...', namespace='/test')
+    socketio.emit('progress', {'data': 'Loading data...'}, namespace='/test')
     # LOAD DATA
     NewMerged_XY = pd.read_csv('TrainingData.csv')
     Xval = NewMerged_XY.iloc[:, :-1]
@@ -43,7 +43,7 @@ def CheckForAccuracy(AcceptError):
     #Xval, yval = smote.fit_resample(Xval, yval)
 
     # LIST OF MODELS
-    models = {LogisticRegression(),RandomForestClassifier()}
+    models = {LogisticRegression(solver='lbfgs', max_iter=1000),RandomForestClassifier()}
     with open('Accuracy.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
 
@@ -59,7 +59,7 @@ def CheckForAccuracy(AcceptError):
                 # Perform LOOCV
                 for train_index, test_index in loo.split(Xval):
 
-                    socketio.emit(str(modelNr)+" : "+str(test_index[0])+" / "+str(len(Xval)), namespace='/test')
+                    socketio.emit('progress', {'data': str(modelNr)+" : "+str(test_index[0])+" / "+str(len(Xval))}, namespace='/test')
                     print(str(modelNr)+" : "+str(test_index[0])+" / "+str(len(Xval)))
                     # print(str(test_index[0])+"/"+str(len(Xval)))
 

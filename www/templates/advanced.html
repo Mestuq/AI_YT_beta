@@ -56,6 +56,14 @@
                         <label for="PagesNumber">Load number of pages:</label>
                     </div>
                 </div>
+
+                <div class="form-check form-switch d-flex align-items-center h-100">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" name="ReplaceChannel" checked>
+                    <label class="form-check-label" for="flexCheckDefault">
+                        &nbsp;Delete previous channels
+                    </label>
+                </div>
+
                 <input class="btn btn-primary btn-lg" type="submit" value="Search Channels">
             </form>
         </div>
@@ -73,7 +81,7 @@
                     </div>
                 </div>
                 <div class="col-md">
-                    <button class="add-button btn btn-primary btn-lg w100 h100" type="button">Add</button>
+                    <button class="add-button btn btn-primary btn-lg w-100 h-100" type="button">Add</button>
                 </div>
             </form>
             <h2>Data:</h2>
@@ -108,8 +116,8 @@
                     </div>
                 </div>
 
-                <div class="form-check form-switch d-flex align-items-center h100">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" name="ReplaceCSV" checked>
+                <div class="form-check form-switch d-flex align-items-center h-100">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" name="ReplaceCSV">
                     <label class="form-check-label" for="flexCheckDefault">
                         &nbsp;Replace existing data
                     </label>
@@ -142,10 +150,10 @@
                     <h3>There is no downloaded channels.</h3>
                 {% endif %}
                 <div class="col-md">
-                    <input class="btn btn-primary btn-lg w100" type="submit" value="Concat" name="Concat">
+                    <input class="btn btn-primary btn-lg w-100" type="submit" value="Concat" name="Concat">
                 </div>
                 <div class="col-md">
-                    <input class="btn btn-primary btn-lg w100" type="submit" value="Delete" name="Delete">
+                    <input class="btn btn-primary btn-lg w-100" type="submit" value="Delete" name="Delete">
                 </div>
             </form>
         </div>
@@ -155,7 +163,7 @@
         <div class="mx-auto borderRound">
             <h1 class="text-center">Dataset</h1>
             {% if videos %}
-                <button class="btn btn-outline-primary btn-lg w100" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <button class="btn btn-outline-primary btn-lg w-100" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                     Show/Hide
                 </button>
                 <div class="collapse" id="collapseExample">
@@ -182,13 +190,13 @@
                 <div class="col-md">
                     <div class="form-floating">
                         <input placeholder="4" class="form-control form-control-lg" type="number" name="DeleteColumnsWithOnly" id="DeleteColumnsWithOnly" value="3" required>
-                        <label for="DeleteColumnsWithOnly">Delete Columns With Only:</label>
+                        <label for="DeleteColumnsWithOnly">Delete tags that only have [...] or less videos</label>
                     </div>
                 </div>
                 <div class="col-md">
                     <div class="form-floating">
                         <input placeholder="2" class="form-control form-control-lg" type="number" name="deleteRowsWithOnly" id="deleteRowsWithOnly" value="2" required>
-                        <label for="deleteRowsWithOnly">Delete Rows With Only:</label>
+                        <label for="deleteRowsWithOnly">Delete videos with only [...] or less of tags</label>
                     </div>
                 </div>
                 <div class="col-md">
@@ -199,6 +207,18 @@
                 </div>
                 <input class="btn btn-primary btn-lg" type="submit" value="Clean data">
             </form>
+
+            <br />
+
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="{{ url_for('static', filename='Views before.png') }}" onerror="this.src='{{ url_for('static', filename='empty.png') }}';" alt="Image" class="w-100">
+                </div>
+                <div class="col-md-6">
+                    <img src="{{ url_for('static', filename='Views after.png') }}" onerror="this.src='{{ url_for('static', filename='empty.png') }}';" alt="Image" class="w-100">
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -214,7 +234,7 @@
                     </div>
                 </div>
                 <div class="col-md">
-                    <input class="btn btn-primary btn-lg h100 w100" type="submit" value="Calculate error">
+                    <input class="btn btn-primary btn-lg h-100 w-100" type="submit" value="Calculate error">
                 </div>
             </form>
             {% if accuracy %}
@@ -244,7 +264,7 @@
                     </div>
                 </div>
                 <div class="col-md">
-                    <input class="btn btn-primary btn-lg w100 h100" type="submit" value="Generate tags">
+                    <input class="btn btn-primary btn-lg w-100 h-100" type="submit" value="Generate tags">
                 </div>
             </form>
         </div>
@@ -295,7 +315,7 @@
                 </div>
                 <div class="col-md">
                     <div class="form-floating">
-                        <input class="btn btn-primary btn-lg w100 h100" type="submit" value="Add">
+                        <input class="btn btn-primary btn-lg w-100 h-100" type="submit" value="Add">
                     </div>
                 </div>
             </form>
@@ -318,5 +338,11 @@
         </div>
     </div>
 </div>
+
+
+<script src="{{url_for('static', filename='replaceUnderscore.js')}}" type="text/javascript" charset="utf-8"></script>
+<script src="{{url_for('static', filename='badgeAutomaticAssign.js')}}" type="text/javascript" charset="utf-8"></script>
+
 <script src="{{url_for('static', filename='saveScroll.js')}}" type="text/javascript" charset="utf-8"></script>
+
 {% endblock %}

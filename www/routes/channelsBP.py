@@ -78,16 +78,22 @@ def processSearchForYoutubeChannels():
     else:
         YoutubeQuery = request.form.get('YoutubeQuery')
         PagesNumber = request.form.get('PagesNumber')
-        socketio.start_background_task(searchForYoutubeChannels,YoutubeQuery,PagesNumber)
+        ReplaceChannel = request.form.get('ReplaceChannel')
+        socketio.start_background_task(searchForYoutubeChannels,YoutubeQuery,PagesNumber,ReplaceChannel)
     return render_template('process.html')
 
-def searchForYoutubeChannels(YoutubeQuery,PagesNumber):
+def searchForYoutubeChannels(YoutubeQuery,PagesNumber,ReplaceChannel):
     time.sleep(1) # Waiting for client to load the website
     # PREPARING DATA
     global progressInfo
     progressInfo = 0
+
     global channels
-    channels = []
+    if (ReplaceChannel == "on"):
+        channels = []
+    else:
+        load_channels()
+    
     urlTest="https://www.youtube.com/results?search_query="+YoutubeQuery.replace(' ', '+')
 
     # YOUTUBE SEARCH OPTIONS
