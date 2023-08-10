@@ -59,7 +59,7 @@ def CheckForAccuracy(AcceptError):
                 # Perform LOOCV
                 for train_index, test_index in loo.split(Xval):
 
-                    socketio.emit('progress', {'data': str(modelNr)+" : "+str(test_index[0])+" / "+str(len(Xval))}, namespace='/test')
+                    socketio.emit('progress', {'data': "Model "+str(modelNr+1)+" in 2 : element "+str(test_index[0])+" / "+str(len(Xval))}, namespace='/test')
                     print(str(modelNr)+" : "+str(test_index[0])+" / "+str(len(Xval)))
                     # print(str(test_index[0])+"/"+str(len(Xval)))
 

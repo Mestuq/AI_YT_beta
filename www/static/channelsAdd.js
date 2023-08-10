@@ -19,6 +19,9 @@ $(document).ready(function()
                             "<span style='color: grey; cursor: pointer;' onclick='window.location.reload();'> (Reload to validate)</span>"+
                         "</li>"
                         );
+                    } else 
+                    {
+                        alert("Invalid name");
                     }
                 }
             });
@@ -38,6 +41,9 @@ $(document).ready(function()
                 if (response.success) 
                 {
                     obj.parent().remove();
+                } 
+                else {
+                    alert("Unable to delete. Try again!");
                 }
              }
         });

@@ -73,8 +73,6 @@ def Clean(DeleteColumnsWithOnly,deleteRowsWithOnly,OutlinerPrecise):
     # GENERATE HISTOGRAM
     generateHistogram(Y['views'].values,'Views before',len(keywords_series))
 
-
-
     # BOOLEAN TABLE 
     socketio.emit('progress', {'data':'Generating boolean table'}, namespace='/test')
     X_transformed = pd.DataFrame(index=range(len(X)), columns=keywords_series)

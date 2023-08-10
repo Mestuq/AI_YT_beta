@@ -34,7 +34,8 @@ def add():
             if [text] not in channels: # REMOVE DUPLICATES
                 writer.writerow([text])
                 channels.append(text)
-    return jsonify({'success': True})
+                return jsonify({'success': True})
+    return jsonify({'success': False})
 
 @channels_bp.route('/removeChannel', methods=['POST'])
 def remove():
