@@ -43,54 +43,57 @@ def CheckForAccuracy(AcceptError):
     #Xval, yval = smote.fit_resample(Xval, yval)
 
     # LIST OF MODELS
-    models = {LogisticRegression(solver='lbfgs', max_iter=1000),RandomForestClassifier()}
-    with open('Accuracy.csv', 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
+    try:
+        models = {LogisticRegression(solver='lbfgs', max_iter=1000),RandomForestClassifier()}
+        with open('Accuracy.csv', 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
 
-        for modelNr,model in enumerate(models):
+            for modelNr,model in enumerate(models):
 
-            # Initialize LOOCV
-            loo = LeaveOneOut()
+                # Initialize LOOCV
+                loo = LeaveOneOut()
 
-            # Counter for predictions within the acceptable error range
-            within_range_count = 0
+                # Counter for predictions within the acceptable error range
+                within_range_count = 0
 
-            try:
-                # Perform LOOCV
-                for train_index, test_index in loo.split(Xval):
+                try:
+                    # Perform LOOCV
+                    for train_index, test_index in loo.split(Xval):
 
-                    socketio.emit('progress', {'data': "Model "+str(modelNr+1)+" in 2 : element "+str(test_index[0])+" / "+str(len(Xval))}, namespace='/test')
-                    print(str(modelNr)+" : "+str(test_index[0])+" / "+str(len(Xval)))
-                    # print(str(test_index[0])+"/"+str(len(Xval)))
+                        socketio.emit('progress', {'data': "Model "+str(modelNr+1)+" in 2 : element "+str(test_index[0])+" / "+str(len(Xval))}, namespace='/test')
+                        print(str(modelNr)+" : "+str(test_index[0])+" / "+str(len(Xval)))
+                        # print(str(test_index[0])+"/"+str(len(Xval)))
 
-                    X_train, X_test = Xval.values[train_index], Xval.values[test_index]
-                    y_train, y_test = yval[train_index], yval[test_index]
+                        X_train, X_test = Xval.values[train_index], Xval.values[test_index]
+                        y_train, y_test = yval[train_index], yval[test_index]
 
-                    # Train the model on the training data
-                    model.fit(X_train, y_train)
+                        # Train the model on the training data
+                        model.fit(X_train, y_train)
 
-                    # Make predictions on the test data
-                    y_pred = model.predict(X_test)[0]
+                        # Make predictions on the test data
+                        y_pred = model.predict(X_test)[0]
 
-                    # Check if the prediction falls within the acceptable error range
-                    if abs(y_pred - y_test[0]) <= AcceptError:
-                        within_range_count += 1
+                        # Check if the prediction falls within the acceptable error range
+                        if abs(y_pred - y_test[0]) <= AcceptError:
+                            within_range_count += 1
 
-                # Calculate the percentage of predictions within the acceptable error range
-                within_range_percentage = (within_range_count / len(yval)) * 100
-                if modelNr == 0:
-                    result = ["Linear Regression",within_range_percentage]
-                if modelNr == 1:
-                    result = ["Random Forest",within_range_percentage]
-                writer.writerow(result)
-            except Exception as e:
-                print("EXPECTION--------------------------------------------------")
-                print(e)
-
+                    # Calculate the percentage of predictions within the acceptable error range
+                    within_range_percentage = (within_range_count / len(yval)) * 100
+                    if modelNr == 0:
+                        result = ["Linear Regression",within_range_percentage]
+                    if modelNr == 1:
+                        result = ["Random Forest",within_range_percentage]
+                    writer.writerow(result)
+                except Exception as e:
+                    print("EXPECTION--------------------------------------------------")
+                    print(e)
+                    socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
+        socketio.emit('finished', namespace='/test')
+    except Exception as e:
+        print("EXPECTION--------------------------------------------------")
+        print(e)
+        socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
     search_lock.release()
-    socketio.emit('finished', namespace='/test')
-
-
 #@socketio.on('downloadChannels', namespace='/test')
 #def downloadChannels(query,number):
 #    socketio.start_background_task(perform_task)

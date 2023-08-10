@@ -131,12 +131,12 @@ def searchForYoutubeVideos(PagesNumber,ReplaceCSV):
                 except Exception as e:
                     print(f'Error processing URL: {url}')
                     print(e)
+                    socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
     #df = pd.DataFrame(video_data) 
     #df.to_csv('videos.csv', index=False)
             #return df
 
 
-    
     # SAVEING DATA 
     
 

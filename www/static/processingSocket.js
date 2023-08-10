@@ -9,12 +9,24 @@ socket.on('error', function(error) {
 });
 
 socket.on('progress', function(msg) {
-    console.log('Socket error:', msg.data);
     document.getElementById('progress').innerHTML = msg.data;
 });
 
+socket.on('errorOccured', function(msg) {
+    document.getElementById('errorContent').style.display = "block";
+    document.getElementById('errorContent').innerHTML += msg.errorContent + "<br />";
+});
+
 socket.on('finished', function() {
-    window.location.href = '/';
+    if(document.getElementById('errorContent').style.display == "none")
+    {
+        window.location.href = '/';
+    }
+    else
+    {
+        document.getElementById('LoadingBar').style.display = "none";
+        document.getElementById('errorContent').innerHTML += "<button id=\"backButton\" onclick=\"window.location.href = '/';\" class=\"btn btn-primary btn-lg\">Continue</button>";
+    }
 });
 
 socket.on('disconnect', function() {

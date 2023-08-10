@@ -124,12 +124,17 @@ def searchForYoutubeChannels(YoutubeQuery,PagesNumber,ReplaceChannel):
                     channels.append(entry['uploader_url'])
             except Exception as e:
                 print(f"Error occurred: {e}")
+                socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
                 continue
 
     # SAVEING
-    with open(r'channels.csv', 'w') as fp:
-        for item in channels:
-            fp.write("%s\n" % item)
+    try:
+        with open(r'channels.csv', 'w') as fp:
+            for item in channels:
+                fp.write("%s\n" % item)
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
     
     # FINISHING
     search_lock.release()
