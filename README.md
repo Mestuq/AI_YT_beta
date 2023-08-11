@@ -5,9 +5,8 @@
 **Flask (Python) website for Machine Learning Youtube tags.**
 
 1. Write topic of your video
-2. Paste your Youtube channel
-3. Wait
-4. Boom! Ready tags to copy, perfect for your videos.
+2. Wait...
+3. Boom! Ready tags to copy, perfect for your videos.
 
 ## Info
 
@@ -16,11 +15,7 @@ This model is pretty slow. Need probably more than an hour per query to generate
 I know ChatGPT, can generate tags much faster and have much bigger database, but even of small accuracy of this project, from my expirience this project generates a little bit better result in views for me than from ChatGPT.
 Accuracy is poor, because i dont have enaught information to work with. My data is really limited. Youtube studio have options to load clickrate, impressions etc. but this data is hidden from public.
 
-Because of that I dont think that, there are bad results.
-
-Considering that the "tags" is not most important indicator of video popularity.
-
-Its probably better than nothing. It probably have some impact. And if so, then why we shoudnt use it? Its is still better than random guessing.
+Because of that I don't think that, there are bad results, considering that the "tags" is not most important indicator of video popularity.
 
 I prefere to consider both models during choosing tags to paste into my videos, because i dont know of how exactly Youtube alghoritm works.
 
@@ -28,11 +23,11 @@ I prefere to consider both models during choosing tags to paste into my videos, 
 
 1. **Program asks user for search query.**
    Program will looks for youtube channels with similar topics. (Will add to channels list all thats uploaders info from videos that will appear after searching that text into youtube search in given pages number)
-2. **Ask you for your youtube channel, to better predict your data.**
-   It will add your youtube channel to the list of channels.
-3. **Download video info (uploader name, views and list of tags).**
+2. **Download video info (uploader name, views and list of tags).**
    For each channel will be downloaded given number of videos info (or less, if channel doesnt have that many videos).
    This is taking the most of loading time, because for better analysis we recommend to download at least 1000 videos infos.
+3. **Select channels.**
+   Select which channels will be considered in a training set.
 4. **Preparing data.**
 
 - Generate a boolean table (videos in rows and tags (with channel name in considiration because every channel have some sort of regular audiences) as columns).
@@ -51,6 +46,8 @@ I prefere to consider both models during choosing tags to paste into my videos, 
    for information about the owner of the video)
 7. **Suggested tags**
    These models gives us the coefficient (or feature importances) numbers that we can use to predict tags that will give us the most of views. Sorted from the higher impact.
+8. **Save your favorite tags**
+   Option for export your result for later.
 
 ## Installing
 
