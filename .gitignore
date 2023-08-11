@@ -3,3 +3,7 @@ profile_report.html
 *.pyc
 www/static/Views before.png
 www/static/Views after.png
+www/build
+www/dist
+www/ViewsAfter.png
+www/ViewsBefore.png

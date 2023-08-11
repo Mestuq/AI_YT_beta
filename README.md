@@ -85,6 +85,15 @@ python "www/main.py"
 
 Website is avalible in http://127.0.0.1:5000/ .
 
+### Via pyinstaller
+
+Building independent exe by following commands
+
+```
+cd www
+pyinstaller application.spec
+```
+
 ## Future plans
 
 - Currently im not considering "date of uploading" as a predictor.

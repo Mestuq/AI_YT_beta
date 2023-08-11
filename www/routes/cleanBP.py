@@ -1,4 +1,4 @@
-from flask import Blueprint,Flask,render_template, request, jsonify, url_for, redirect
+from flask import Blueprint,Flask,render_template, request, jsonify, url_for, redirect, send_file, Response
 from flask_socketio import SocketIO
 from app import app, socketio
 
@@ -8,6 +8,10 @@ import scipy as sc
 import numpy as np
 from threading import Thread, Lock
 import time
+import os
+import io
+
+from PIL import Image
 
 from routes import videosBP
 
@@ -36,7 +40,22 @@ def generateHistogram(data,src,tagsNumberForDescription):
     plt.xlabel(src)
     plt.ylabel('Frequency')
     
-    plt.savefig('static/'+src+'.png', dpi=100, bbox_inches='tight')
+    plt.savefig(src+'.png', dpi=100, bbox_inches='tight')
+
+@clean_bp.route('/image', methods=['GET'])
+def get_image():
+    image_path = request.args.get('src')
+    if not image_path:
+        return "Image source path not provided.", 400
+    
+    image = Image.open(image_path)
+    image_stream = io.BytesIO()
+    image.save(image_stream, format='png')
+    image_stream.seek(0) 
+    headers = {'Content-Type': 'image/png'}
+    return Response(image_stream, headers=headers)
+    #mimetype = 'image/png' 
+    #return send_file(image_path, mimetype=mimetype)
 
 def Clean(DeleteColumnsWithOnly,deleteRowsWithOnly,OutlinerPrecise):
     time.sleep(1) # Waiting for client to load the website
@@ -71,7 +90,7 @@ def Clean(DeleteColumnsWithOnly,deleteRowsWithOnly,OutlinerPrecise):
         keywords_series = X['keywords'].str.split().explode().unique()
 
         # GENERATE HISTOGRAM
-        generateHistogram(Y['views'].values,'Views before',len(keywords_series))
+        generateHistogram(Y['views'].values,'ViewsBefore',len(keywords_series))
 
         # BOOLEAN TABLE 
         socketio.emit('progress', {'data':'Generating boolean table'}, namespace='/test')
@@ -122,7 +141,7 @@ def Clean(DeleteColumnsWithOnly,deleteRowsWithOnly,OutlinerPrecise):
         X_transformed = X_transformed.drop(columns=columns_to_delete)
 
         # GENERATE HISTOGRAM
-        generateHistogram(Y['views'],'Views after',len(X_transformed.columns))
+        generateHistogram(Y['views'],'ViewsAfter',len(X_transformed.columns))
 
         # MERGEING AND SAVEING TO FILE
         socketio.emit('progress', {'data':'Saveing'}, namespace='/test')
