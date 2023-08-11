@@ -71,9 +71,9 @@ def GetTags(Amount):
         # Save result
         coefficients_df.head(Amount).to_csv('LinearRegression.csv', encoding='utf-8', index=False)
     except Exception as e:
-        socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
         print("EXPECTION--------------------------------------------------")
         print(e)
+        socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
 
     # RANDOM FOREST -------------------------------------------------------------
 
@@ -106,6 +106,7 @@ def GetTags(Amount):
     except Exception as e:
         print("EXPECTION--------------------------------------------------")
         print(e)
+        socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
     # ------------------------------------------------------------------------------
 
     # FINISHING PROCESS

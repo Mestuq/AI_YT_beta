@@ -13,6 +13,10 @@ from routes import indexBP
 favorites_bp = Blueprint('favorites', __name__)
 
 def getFavorites():
+
+    if not os.path.exists("favorites/"):
+        os.makedirs("favorites/")
+
     name_set = set()
     # List all files in the favorites folder
     file_list = os.listdir("favorites/")

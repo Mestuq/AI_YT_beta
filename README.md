@@ -52,6 +52,42 @@ I prefere to consider both models during choosing tags to paste into my videos, 
 7. **Suggested tags**
    These models gives us the coefficient (or feature importances) numbers that we can use to predict tags that will give us the most of views. Sorted from the higher impact.
 
+## Installing
+
+### Via docker
+
+Run following line
+
+```
+docker build -t tagsai:mestuq .
+docker run -p 5000:5000 --name TagsAI tagsai:mestuq
+```
+
+Website is avalible in http://127.0.0.1:5000/ .
+
+### Via python script
+
+Install required
+
+```
+pip install -r requirements.txt
+```
+
+Or use lock files avalible in "Lock files" folder.
+
+```
+pipenv shell
+pipenv install --ignore-pipfile
+```
+
+Then run
+
+```
+python "www/main.py"
+```
+
+Website is avalible in http://127.0.0.1:5000/ .
+
 ## Future plans
 
 - Currently im not considering "date of uploading" as a predictor.

@@ -41,6 +41,10 @@ def processSearchForYoutubeVideos():
     return render_template('process.html')
 
 def getListOfDownloadedChannels():
+    
+    if not os.path.exists("downloaded/"):
+        os.makedirs("downloaded/")
+
     file_names_without_extension = []
     for file_name in os.listdir("downloaded/"):
         # Check if it's a file and not a directory
@@ -52,6 +56,10 @@ def getListOfDownloadedChannels():
 
 @videos_bp.route('/concatChannels', methods=['POST'])
 def concatChannels():
+
+    if not os.path.exists("downloaded/"):
+        os.makedirs("downloaded/")
+
     selected_channels = []
     form_data = request.form
 
@@ -82,6 +90,10 @@ def concatChannels():
     
 
 def searchForYoutubeVideos(PagesNumber,ReplaceCSV):
+
+    if not os.path.exists("downloaded/"):
+        os.makedirs("downloaded/")
+
     time.sleep(1) # Waiting for client to load the website
     print("=============STARTING==============")
     # PREPARING DATA

@@ -12,4 +12,4 @@ app.register_blueprint(favoritesBP.favorites_bp)
 
 if __name__ == '__main__':
     app.debug = True
-    socketio.run(app, port=5000, debug=True)
+    socketio.run(app, port=5000, debug=True, allow_unsafe_werkzeug=True, host='0.0.0.0')
