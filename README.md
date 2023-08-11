@@ -51,7 +51,18 @@ I prefere to consider both models during choosing tags to paste into my videos, 
 
 ## Installing
 
-### Via docker
+### Pyinstaller
+
+I am building application for my releases, so all you need to do is to download them and run exe.
+
+But if you want to build it on your own, then run following commands:
+
+```
+cd www
+pyinstaller application.spec
+```
+
+## Via docker
 
 Run following line
 
@@ -84,15 +95,6 @@ python "www/main.py"
 ```
 
 Website is avalible in http://127.0.0.1:5000/ .
-
-### Via pyinstaller
-
-Building independent exe by following commands
-
-```
-cd www
-pyinstaller application.spec
-```
 
 ## Future plans
 
