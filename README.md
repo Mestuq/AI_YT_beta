@@ -59,7 +59,7 @@ But if you want to build it on your own, then run following commands:
 
 ```
 cd www
-pyinstaller application.spec
+pyinstaller StandaloneVersion.spec
 ```
 
 ## Via docker

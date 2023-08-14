@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['application.py'],
+    ['StandaloneVersion.py'],
     pathex=[],
     binaries=[],
     datas=[('templates', 'templates'), ('static', 'static')],
@@ -28,7 +28,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='application',
+    name='StandaloneVersion',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
