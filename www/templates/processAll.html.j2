@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Processing all...{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="mx-auto borderRound">
+            <h1 class="text-center">Please wait...</h1>
+            <iframe id="task"></iframe>
+        </div>
+    </div>  
+</div>
+<script src="{{url_for('static', filename='processingAll.js')}}" type="text/javascript" charset="utf-8"></script>
+{% endblock %}

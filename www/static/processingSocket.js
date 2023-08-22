@@ -25,7 +25,7 @@ socket.on('finished', function() {
     else
     {
         document.getElementById('LoadingBar').style.display = "none";
-        document.getElementById('errorContent').innerHTML += "<button id=\"backButton\" onclick=\"window.location.href = '/';\" class=\"btn btn-primary btn-lg\">Continue</button>";
+        document.getElementById('errorContent').innerHTML += "<button id=\"backButton\" onclick=\"window.location.href = '/advanced';\" class=\"btn btn-primary btn-lg\">Continue</button>";
     }
 });
 

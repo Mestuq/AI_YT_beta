@@ -1,19 +1,12 @@
 from flask import Blueprint,Flask,render_template, request, jsonify, url_for, redirect
 from flask_socketio import SocketIO
 from app import socketio
-
 from threading import Thread, Lock
-import csv
-import yt_dlp
 import pandas as pd
-import os
-import time
-
+import yt_dlp, csv, os, time
 from routes import channelsBP
 
-
 videos_bp = Blueprint('videos', __name__)
-
 video_data = []
 search_lock = Lock()
 
@@ -26,47 +19,38 @@ def load_videos():
     except FileNotFoundError:
         video_data = []
 
-def normalizeText(text):
+def normalize_text(text): # Tags are distinguished by spaces, so spaces will be replaced with _
     return text.lower().replace(' ', '_').replace(',', ' ')
 
-# SEARCH QUERRY FOR VIDEOS
 @videos_bp.route('/processSearchForYoutubeVideos', methods=['POST'])
-def processSearchForYoutubeVideos():
+def process_search_for_youtube_videos():
     if not search_lock.acquire(blocking=False):
-        return render_template('busy.html')
+        return render_template('busy.html.j2')
     else:
-        PagesNumber = request.form.get('PagesNumber')
-        ReplaceCSV = request.form.get('ReplaceCSV')
-        socketio.start_background_task(searchForYoutubeVideos,PagesNumber,ReplaceCSV)
-    return render_template('process.html')
+        pages_number = request.form.get('PagesNumber')
+        replace_CSV = request.form.get('ReplaceCSV')
+        socketio.start_background_task(search_for_youtube_videos, pages_number, replace_CSV)
+    return render_template('process.html.j2')
 
-def getListOfDownloadedChannels():
-    
+def get_list_of_downloaded_channels(): # Downloaded channels are got from folder /downloaded content
     if not os.path.exists("downloaded/"):
         os.makedirs("downloaded/")
-
     file_names_without_extension = []
     for file_name in os.listdir("downloaded/"):
-        # Check if it's a file and not a directory
         if os.path.isfile(os.path.join("downloaded/", file_name)):
-            # Split the file name and extension
             file_name_without_extension, file_extension = os.path.splitext(file_name)
             file_names_without_extension.append(file_name_without_extension)
     return file_names_without_extension
 
 @videos_bp.route('/concatChannels', methods=['POST'])
-def concatChannels():
-
+def concat_and_delete_channels():
     if not os.path.exists("downloaded/"):
         os.makedirs("downloaded/")
-
     selected_channels = []
     form_data = request.form
-
-    for key, value in form_data.items():
+    for key, value in form_data.items(): # Get selected checkboxes
         if key != 'Concat' and key != 'Delete':
             selected_channels.append(key)
-
     if 'Concat' in form_data:
         dataframes = []
         for channel in selected_channels:
@@ -77,82 +61,72 @@ def concatChannels():
         if dataframes:
             concatenated_df = pd.concat(dataframes, ignore_index=True)
             concatenated_df.to_csv('videos.csv', index=False)
-
     elif 'Delete' in form_data:
         for channel in selected_channels:
             file_path = os.path.join('downloaded', f'{channel}.csv')
             if os.path.exists(file_path):
                 os.remove(file_path)
+    return redirect(url_for('index.advanced_website')) 
 
-    return redirect(url_for('index.advanced')) 
+@videos_bp.route('/deleteAllChannels') # Used in processingAll.js
+def delete_all_channels():
+    if os.path.exists("downloaded/"):
+        file_list = os.listdir("downloaded/")
+        for file_name in file_list:
+            file_path = os.path.join("downloaded/", file_name)
+            if os.path.isfile(file_path):
+                print(file_path)
+                #os.remove(file_path)
+    return redirect(url_for('index.advanced_website')) 
 
+@videos_bp.route('/concatAllChannels') # Used in processingAll.js
+def concat_all_channels():
+    dataframes = []
+    if os.path.exists("downloaded/"):
+        file_list = os.listdir("downloaded/")
+        for file_name in file_list:
+            file_path = os.path.join("downloaded/", file_name)
+            if os.path.isfile(file_path):
+                df = pd.read_csv(file_path)
+                dataframes.append(df)
+    concatenated_df = pd.concat(dataframes, ignore_index=True)
+    concatenated_df.to_csv('videos.csv', index=False)
+    return redirect(url_for('index.advanced_website')) 
 
-    
-
-def searchForYoutubeVideos(PagesNumber,ReplaceCSV):
-
+def search_for_youtube_videos(pages_number, replace_CSV):
     if not os.path.exists("downloaded/"):
         os.makedirs("downloaded/")
-
     time.sleep(1) # Waiting for client to load the website
-    print("=============STARTING==============")
-    # PREPARING DATA
     channelsBP.load_channels()
     global video_data
     video_data = []
-
-    # YOUTUBE SEARCHING OPTIONS
     ydl_opts = {
         'verbose': True,
-        'playlistend': PagesNumber
+        'playlistend': pages_number
     }
-
-    # DOWNLOADING VIDEO DATA
     for count,url in enumerate(channelsBP.channels):
         user_videos = []
-        if (ReplaceCSV == "on") or (not os.path.exists("downloaded/@"+url[0].split("@")[-1]+'.csv')):
+        if (replace_CSV == "on") or (not os.path.exists("downloaded/@"+url[0].split("@")[-1]+'.csv')):
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 try:
-                    print(f'-------------------Processing step {count+1}/{len(channelsBP.channels)}:({url[0]})')
                     socketio.emit('progress', {'data': f'Processing step {count+1}/{len(channelsBP.channels)}:({url[0]})'}, namespace='/test')
-
                     info = ydl.extract_info(url[0]+"/videos", download=False)
                     if info is not None and hasattr(info, 'get'):
                         videos = info.get('entries')
-
                         for video in videos:
                             if video is not None and hasattr(info, 'get'):
                                 video_info = {
-                                    'Channel': normalizeText("(uploader)"+video.get('uploader', '')),
+                                    'Channel': normalize_text("(uploader)"+video.get('uploader', '')),
                                     'Title': video.get('title', '').lower(),
                                     'Views': video.get('view_count', ''),
-                                    #'Description': video.get('description', '').lower(),
-                                    'Tags': normalizeText(','.join(["(tag)" + tag for tag in video.get('tags', [])])),
-                                    #'PhrasesTitle': "",
-                                    #'PhrasesDescription': ""
-                                }
+                                    'Tags': normalize_text(','.join(["(tag)" + tag for tag in video.get('tags', [])])),
+                                    }
                                 video_data.append(video_info)
-
                                 user_videos.append(video_info)
-                                
-                            #backup = pd.DataFrame(video_data)
-                            #backup.to_csv('backup.csv', index=False)
-                            
                         user_videos = pd.DataFrame(user_videos) 
                         user_videos.to_csv("downloaded/@"+url[0].split("@")[-1]+'.csv', index=False)
                 except Exception as e:
                     print(f'Error processing URL: {url}')
-                    print(e)
                     socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
-    #df = pd.DataFrame(video_data) 
-    #df.to_csv('videos.csv', index=False)
-            #return df
-
-
-    # SAVEING DATA 
-    
-
-    # FINISHING
     search_lock.release()
     socketio.emit('finished', namespace='/test')
-    print("=============END==============")

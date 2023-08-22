@@ -1,19 +1,13 @@
 from flask import Blueprint,Flask,render_template, request, jsonify, url_for, redirect
 from flask_socketio import SocketIO
 from app import app, socketio
-
 from threading import Thread, Lock
-import csv
-import os
-import sys 
-import time
-import yt_dlp
+import yt_dlp, csv, os, sys, time
 
 channels_bp = Blueprint('channels', __name__)
-
 channels = []
 search_lock = Lock()
-progressInfo=0
+progress_info = 0
 
 def load_channels():
     global channels
@@ -25,7 +19,7 @@ def load_channels():
         channels = []
 
 @channels_bp.route('/addChannel', methods=['POST'])
-def add():
+def add_channel():
     global channels
     text = request.form.get('text')
     if text:
@@ -38,7 +32,7 @@ def add():
     return jsonify({'success': False})
 
 @channels_bp.route('/removeChannel', methods=['POST'])
-def remove():
+def remove_channel():
     index = int(request.form.get('index'))
     if 0 <= index < len(channels):
         del channels[index]
@@ -49,85 +43,68 @@ def remove():
     else:
         return jsonify({'success': False})
 
-class MyLogger:
+class YtDlpProgress:
     def debug(self, msg):
         if msg.startswith('[debug] '):
             pass
         else:
             self.info(msg)
     def info(self, msg):
-        global progressInfo
+        global progress_info
         if '[download] Downloading item ' in msg:
-            progressInfo+=1
-            print(f'------ Downloaded items: {progressInfo}')
-            socketio.emit('progress', {'data': f'Downloaded items: {progressInfo}'}, namespace='/test')
-            #[youtube:search_url] query "a" page 1: Downloading API JSON
-        print(msg)
+            progress_info += 1
+            socketio.emit('progress', {'data': f'Downloaded items: {progress_info}'}, namespace='/test')
         pass
-    def warning(self, msg):
-        print(msg)
-        pass
-    def error(self, msg):
-        print(msg)
-
-# SEARCH QUERRY FOR CHANNELS
 
 @channels_bp.route('/processSearchForYoutubeChannels', methods=['POST'])
-def processSearchForYoutubeChannels():
+def process_search_for_youtube_channels():
     if not search_lock.acquire(blocking=False):
-        return render_template('busy.html')
+        return render_template('busy.html.j2')
     else:
-        YoutubeQuery = request.form.get('YoutubeQuery')
-        PagesNumber = request.form.get('PagesNumber')
-        ReplaceChannel = request.form.get('ReplaceChannel')
-        socketio.start_background_task(searchForYoutubeChannels,YoutubeQuery,PagesNumber,ReplaceChannel)
-    return render_template('process.html')
+        youtube_query = request.form.get('YoutubeQuery')
+        pages_number = request.form.get('PagesNumber')
+        replace_channel = request.form.get('ReplaceChannel')
+        socketio.start_background_task(search_for_youtube_channels, youtube_query, pages_number, replace_channel)
+    return render_template('process.html.j2')
 
-def searchForYoutubeChannels(YoutubeQuery,PagesNumber,ReplaceChannel):
+def search_for_youtube_channels(youtube_query, pages_number, replace_channel):
     time.sleep(1) # Waiting for client to load the website
-    # PREPARING DATA
-    global progressInfo
-    progressInfo = 0
-
+    global progress_info
+    progress_info = 0
     global channels
-    if (ReplaceChannel == "on"):
+    if (replace_channel == "on"):
         channels = []
     else:
         load_channels()
-    
-    urlTest="https://www.youtube.com/results?search_query="+YoutubeQuery.replace(' ', '+')
+    url_test = "https://www.youtube.com/results?search_query="+youtube_query.replace(' ', '+')
 
-    # YOUTUBE SEARCH OPTIONS
     ydl_opts = {
-    'logger': MyLogger(),
-    'noabortonerror': True,
-    'ignoreerrors': True,
-    'skip_download': True,
-    'no_warnings': True,
-    'writesubtitles': False,
-    'writeautomaticsub': False,
-    'allsubtitles': False,
-    'listformats': False,
-    'forcejson': False,
-    'quiet': True,
-    'no_warnings': True,
-    'verbose': True,
-    'playlistend': PagesNumber
-    }
+        'logger': YtDlpProgress(),
+        'noabortonerror': True,
+        'ignoreerrors': True,
+        'skip_download': True,
+        'no_warnings': True,
+        'writesubtitles': False,
+        'writeautomaticsub': False,
+        'allsubtitles': False,
+        'listformats': False,
+        'forcejson': False,
+        'quiet': True,
+        'no_warnings': True,
+        'verbose': True,
+        'playlistend': pages_number
+        }
 
-    # SEARCHING
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(urlTest, download=False)
+        info = ydl.extract_info(url_test, download=False)
         for count, entry in enumerate(info['entries']):
             try:
-                if entry['uploader_url'] not in channels: # REMOVING DUPLICATES
+                if entry['uploader_url'] not in channels: # Removing duplicates
                     channels.append(entry['uploader_url'])
             except Exception as e:
                 print(f"Error occurred: {e}")
                 socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
                 continue
-
-    # SAVEING
     try:
         with open(r'channels.csv', 'w') as fp:
             for item in channels:
@@ -136,6 +113,5 @@ def searchForYoutubeChannels(YoutubeQuery,PagesNumber,ReplaceChannel):
         print(f"Error occurred: {e}")
         socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
     
-    # FINISHING
     search_lock.release()
     socketio.emit('finished', namespace='/test')

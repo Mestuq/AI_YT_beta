@@ -1,83 +1,53 @@
 from flask import Blueprint,Flask,render_template, request, jsonify, url_for, redirect
 from flask_socketio import SocketIO
 from app import app, socketio
-
-from threading import Thread, Lock
-import pandas as pd
-import csv
-import time
-
 from sklearn.model_selection import LeaveOneOut
 from sklearn.metrics import accuracy_score
-
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-
-from imblearn.over_sampling import SMOTE
+from threading import Thread, Lock
+import pandas as pd
+import csv, time
 
 accuracy_bp = Blueprint('accuracy', __name__)
 search_lock = Lock()
 
-# SEARCH FOR ACCURACY MODEL
 @accuracy_bp.route('/processCheckForAccuracy', methods=['POST'])
-def processCheckForAccuracy():
+def process_check_for_accuracy():
     if not search_lock.acquire(blocking=False):
-        return render_template('busy.html')
+        return render_template('busy.html.j2')
     else:
-        AcceptError = request.form.get('AcceptError')
-        socketio.start_background_task(CheckForAccuracy,AcceptError)
-    return render_template('process.html')
+        accept_error = request.form.get('AcceptError')
+        socketio.start_background_task(check_for_accuracy,float(accept_error))
+    return render_template('process.html.j2')
 
-def CheckForAccuracy(AcceptError):
+def check_for_accuracy(acceptError):
     time.sleep(1) # Waiting for client to load the website
-    AcceptError = float(AcceptError)
     socketio.emit('progress', {'data': 'Loading data...'}, namespace='/test')
-    # LOAD DATA
-    NewMerged_XY = pd.read_csv('TrainingData.csv')
-    Xval = NewMerged_XY.iloc[:, :-1]
-    yval = NewMerged_XY.iloc[:, -1].values.ravel()
-
-    # Apply SMOTE for oversampling the minority class
-
-    #smote = SMOTE(random_state=42)
-    #Xval, yval = smote.fit_resample(Xval, yval)
-
-    # LIST OF MODELS
+    # Loading data
+    data = pd.read_csv('TrainingData.csv')
+    Xval = data.iloc[:, :-1]
+    yval = data.iloc[:, -1].values.ravel()
     try:
-        models = {LogisticRegression(solver='lbfgs', max_iter=1000),RandomForestClassifier()}
-        with open('Accuracy.csv', 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-
+        # List of models
+        models = {
+            LogisticRegression(solver='lbfgs', max_iter=1000),
+            RandomForestClassifier()
+            }
+        with open('Accuracy.csv', 'w', newline='') as csvFile:
+            writer = csv.writer(csvFile)
             for modelNr,model in enumerate(models):
-
-                # Initialize LOOCV
                 loo = LeaveOneOut()
-
-                # Counter for predictions within the acceptable error range
                 within_range_count = 0
-
                 try:
-                    # Perform LOOCV
-                    for train_index, test_index in loo.split(Xval):
-
-                        socketio.emit('progress', {'data': "Model "+str(modelNr+1)+" in 2 : element "+str(test_index[0])+" / "+str(len(Xval))}, namespace='/test')
-                        print(str(modelNr)+" : "+str(test_index[0])+" / "+str(len(Xval)))
-                        # print(str(test_index[0])+"/"+str(len(Xval)))
-
-                        X_train, X_test = Xval.values[train_index], Xval.values[test_index]
-                        y_train, y_test = yval[train_index], yval[test_index]
-
-                        # Train the model on the training data
-                        model.fit(X_train, y_train)
-
-                        # Make predictions on the test data
-                        y_pred = model.predict(X_test)[0]
-
-                        # Check if the prediction falls within the acceptable error range
-                        if abs(y_pred - y_test[0]) <= AcceptError:
+                    for trainIndex, testIndex in loo.split(Xval):
+                        socketio.emit('progress', {'data': "Model "+str(modelNr+1)+" in 2 : element "+str(testIndex[0])+" / "+str(len(Xval))}, namespace='/test')
+                        XTrain, XTest = Xval.values[trainIndex], Xval.values[testIndex]
+                        yTrain, yTest = yval[trainIndex], yval[testIndex]
+                        model.fit(XTrain, yTrain)
+                        yPred = model.predict(XTest)[0]
+                        if abs(yPred - yTest[0]) <= acceptError: # Check if the prediction falls within the acceptable error range
                             within_range_count += 1
-
-                    # Calculate the percentage of predictions within the acceptable error range
                     within_range_percentage = (within_range_count / len(yval)) * 100
                     if modelNr == 0:
                         result = ["Linear Regression",within_range_percentage]
@@ -85,16 +55,11 @@ def CheckForAccuracy(AcceptError):
                         result = ["Random Forest",within_range_percentage]
                     writer.writerow(result)
                 except Exception as e:
-                    print("EXPECTION--------------------------------------------------")
-                    print(e)
+                    print(f"Error occurred: {e}")
                     socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
         socketio.emit('finished', namespace='/test')
     except Exception as e:
-        print("EXPECTION--------------------------------------------------")
-        print(e)
+        print(f"Error occurred: {e}")
         socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
     search_lock.release()
-#@socketio.on('downloadChannels', namespace='/test')
-#def downloadChannels(query,number):
-#    socketio.start_background_task(perform_task)
 
