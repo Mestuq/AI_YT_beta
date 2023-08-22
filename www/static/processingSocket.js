@@ -20,7 +20,7 @@ socket.on('errorOccured', function(msg) {
 socket.on('finished', function() {
     if(document.getElementById('errorContent').style.display == "none")
     {
-        window.location.href = '/';
+        window.location.href = '/advanced';
     }
     else
     {

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base.html.j2' %}
 
 {% block title %}Tags AI{% endblock %}
 
@@ -35,7 +35,7 @@
 <div class="container" id="YoutubeTags" data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" tabindex="0">
     <div class="row">
         <div class="mx-auto text-center">
-            <a href="#YoutubeTags">
+            <a href="./">
                 <img class="img-fluid col-6" src="{{url_for('static', filename='logo.png')}}">
             </a>
         </div>

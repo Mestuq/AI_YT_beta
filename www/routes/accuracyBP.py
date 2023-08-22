@@ -21,7 +21,7 @@ def process_check_for_accuracy():
         socketio.start_background_task(check_for_accuracy,float(accept_error))
     return render_template('process.html.j2')
 
-def check_for_accuracy(acceptError):
+def check_for_accuracy(accept_error):
     time.sleep(1) # Waiting for client to load the website
     socketio.emit('progress', {'data': 'Loading data...'}, namespace='/test')
     # Loading data
@@ -46,7 +46,7 @@ def check_for_accuracy(acceptError):
                         yTrain, yTest = yval[trainIndex], yval[testIndex]
                         model.fit(XTrain, yTrain)
                         yPred = model.predict(XTest)[0]
-                        if abs(yPred - yTest[0]) <= acceptError: # Check if the prediction falls within the acceptable error range
+                        if abs(yPred - yTest[0]) <= accept_error: # Check if the prediction falls within the acceptable error range
                             within_range_count += 1
                     within_range_percentage = (within_range_count / len(yval)) * 100
                     if modelNr == 0:

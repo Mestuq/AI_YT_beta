@@ -1,48 +1,44 @@
-var iframe = document.getElementById("Task");
-var currentState = "deleteAllChannels";
+var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
 
-function handleIframeNavigation() {
-    if (iframe.src.includes("/advanced")) {
+socket.on('connect', function() {
+    console.log('Connected');
+});
 
+socket.on('error', function(error) {
+    console.log('Socket error:', error);
+});
 
-        var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+socket.on('progress', function(msg) {
+    document.getElementById('progress').innerHTML = msg.data;
+});
 
-        var form = iframeDoc.createElement('form');
-        form.method = 'post';
-        form.action = 'target_page.html'; // Replace with your target URL
+socket.on('errorOccured', function(msg) {
+    document.getElementById('errorContent').style.display = "block";
+    document.getElementById('errorContent').innerHTML += msg.errorContent + "<br />";
+});
 
-        var input1 = iframeDoc.createElement('input');
-        input1.type = 'hidden';
-        input1.name = 'param1'; // Replace with your parameter name
-        input1.value = 'value1'; // Replace with your parameter value
+socket.on('status', function(msg) {
+    document.getElementById('status').innerHTML = msg.status;
+});
 
-        form.appendChild(input1);
-        iframeDoc.body.appendChild(form);
-        form.submit();
+const formData = new FormData(document.querySelector('form'));
+const YoutubeQuery = formData.get('YoutubeQuery');
+alert(YoutubeQuery);
 
+socket.on('finishedAll', function() {
+    if(document.getElementById('errorContent').style.display == "none")
+    {
+        const formData = new FormData(document.querySelector('form'));
+        const YoutubeQuery = formData.get('YoutubeQuery');
+        window.location.href = '/favorites?name='+encodeURIComponent(YoutubeQuery);
     }
-}
+    else
+    {
+        document.getElementById('LoadingBar').style.display = "none";
+        document.getElementById('errorContent').innerHTML += "<button id=\"backButton\" onclick=\"window.location.href = '/';\" class=\"btn btn-primary btn-lg\">Continue</button>";
+    }
+});
 
-iframe.addEventListener("load", handleIframeNavigation);
-/*
-    1 - /deleteAllChannels
-    2 - /processSearchForYoutubeChannels
-            text YoutubeQuery = GET
-            number PagesNumber = 25 
-            checkbox ReplaceChannel = 1 (true) 
-    3 - /processSearchForYoutubeVideos
-            number PagesNumber = 25
-            checkbox ReplaceCSV = 1 (true)
-    4 - /concatAllChannels
-    5 - /processClean
-            number DeleteColumnsWithOnly = 4
-            number DeleteRowsWithOnly = 2
-            number OutlinerPrecise = 2.0
-    6 - /processCheckForAccuracy
-            number AcceptError = 50
-    7 - /processTags
-            number Amount = 25
-    8 - /FavoriteSaveAs
-            text name = GET
-    REDIRECT favorites?name=GET
-*/
+socket.on('disconnect', function() {
+    console.log('Disconnected from the server');
+});

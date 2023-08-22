@@ -68,7 +68,6 @@ def concat_and_delete_channels():
                 os.remove(file_path)
     return redirect(url_for('index.advanced_website')) 
 
-@videos_bp.route('/deleteAllChannels') # Used in processingAll.js
 def delete_all_channels():
     if os.path.exists("downloaded/"):
         file_list = os.listdir("downloaded/")
@@ -79,7 +78,6 @@ def delete_all_channels():
                 #os.remove(file_path)
     return redirect(url_for('index.advanced_website')) 
 
-@videos_bp.route('/concatAllChannels') # Used in processingAll.js
 def concat_all_channels():
     dataframes = []
     if os.path.exists("downloaded/"):

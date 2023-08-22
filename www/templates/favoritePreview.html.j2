@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base.html.j2' %}
 
 {% block title %}Collection{% endblock %}
 
@@ -53,7 +53,7 @@
                 <h3>No accuracy data available.</h3>
             {% endif %}
             <br />
-            <button id="backButton" onclick="window.location.href = '/';" class="btn btn-primary btn-lg">Go back</button>
+            <button id="backButton" onclick="window.location.href = '/advanced';" class="btn btn-primary btn-lg">Go back</button>
         </div>
     </div>
 </div>

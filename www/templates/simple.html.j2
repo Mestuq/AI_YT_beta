@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base.html.j2' %}
 
 {% block title %}Tags AI{% endblock %}
 
@@ -6,21 +6,27 @@
 
 <div class="container">
     <div class="row">
-        <div class="mx-auto borderRound">
-            <h1 class="text-center">Welcome</h1>
-            <form class="row g-2" action="/processAll" method="POST">
-                <div class="form-floating">
-                    <input placeholder="Cute Cats" class="form-control form-control-lg" type="text" name="YoutubeQuery" id="YoutubeQuery" required>
-                    <label for="YoutubeQuery">Your youtube querry</label>
-                </div>
-                <input class="btn btn-primary btn-lg" type="submit" value="Search Channels">
-            </form>
+        <div class="mx-auto text-center">
+            <a href="#YoutubeTags">
+                <img class="img-fluid col-6" src="{{url_for('static', filename='logo.png')}}">
+            </a>
         </div>
     </div>
     <div class="row">
         <div class="mx-auto borderRound">
-            <h1 class="text-center">More advanced options</h1>
-            <button onclick="window.localation='/advanced';">See more...</button>
+            <h1 class="text-center">Welcome!</h1>
+            <form class="row g-2" action="/processAll" method="POST">
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input placeholder="Cute Cats" class="form-control form-control-lg" type="text" name="YoutubeQuery" id="YoutubeQuery" required>
+                        <label for="YoutubeQuery">Your youtube querry</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <input class="btn btn-primary btn-lg w-100 h-100" type="submit" value="Search Channels">
+                </div>
+            </form>
+            <button class="btn btn-primary btn-lg w-100" onclick="window.location.href = '/advanced';">More advanced options</button>
         </div>
     </div>
 </div>

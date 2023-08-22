@@ -23,14 +23,17 @@ def get_favorites(): # Favorites are got from folder /favorites content
     return name_set
 
 @favorites_bp.route('/FavoriteSaveAs', methods=['GET'])
-def FavoriteSaveAs():
+def favorite_save_as():
     name = request.args.get('name')
+    favorite_save_as(name)
+    return redirect(url_for('index.advanced')) 
+
+def favorite_save_as(name):
     if not os.path.exists("favorites/"):
         os.makedirs("favorites/")
     shutil.copy("LinearRegression.csv"  , "favorites/"+name+"_LinearRegression.csv")
     shutil.copy("RandomForest.csv"      , "favorites/"+name+"_RandomForest.csv")
     shutil.copy("Accuracy.csv"          , "favorites/"+name+"_Accuracy.csv")
-    return redirect(url_for('index.advanced')) 
 
 @favorites_bp.route('/favorites', methods=['GET'])
 def favorites():
@@ -44,7 +47,7 @@ def favorites():
                            accuracy=accuracy)
 
 @favorites_bp.route('/favoritesDelete', methods=['GET'])
-def favoritesDelete():
+def favorites_delete():
     name = request.args.get('name')
     files = ["favorites/"+name+"_LinearRegression.csv",
              "favorites/"+name+"_RandomForest.csv",

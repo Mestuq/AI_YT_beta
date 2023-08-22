@@ -18,7 +18,7 @@ def advanced_website():
     results_logistic_regression = load_csv("LinearRegression.csv")
     results_random_forest = load_csv("RandomForest.csv")
     list_of_downloaded_channels = videosBP.get_list_of_downloaded_channels()
-    favorites = favoritesBP.getFavorites()
+    favorites = favoritesBP.get_favorites()
     videos_sorted =sorted(videosBP.video_data, key=lambda x: int(x[2]) if x[2].isdigit() else float('inf'), reverse=True)
     return render_template('./advanced.html.j2', 
                            channels=channelsBP.channels,
