@@ -11,11 +11,11 @@ from sklearn.ensemble import RandomForestClassifier
 from routes import videosBP
 
 tags_bp = Blueprint('tags', __name__)
-search_lock = Lock()
+tags_lock = Lock()
 
 @tags_bp.route('/processTags', methods=['POST'])
 def process_get_tags():
-    if not search_lock.acquire(blocking=False):
+    if not tags_lock.locked():
         return render_template('busy.html.j2')
     else:
         amount = request.form.get('Amount')
@@ -24,6 +24,8 @@ def process_get_tags():
 
 def get_tags(amount):
     time.sleep(1) # Waiting for client to load the website
+    if not tags_lock.acquire(blocking=False):
+        return
     data = pd.read_csv('TrainingData.csv')
     Xval = data.iloc[:, :-1]
     yval = data.iloc[:, -1].values.ravel()
@@ -63,5 +65,5 @@ def get_tags(amount):
     except Exception as e:
         print(f"Error occurred: {e}")
         socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
-    search_lock.release()
+    tags_lock.release()
     socketio.emit('finished', namespace='/test')

@@ -26,7 +26,7 @@ def get_favorites(): # Favorites are got from folder /favorites content
 def favorite_save_as():
     name = request.args.get('name')
     favorite_save_as(name)
-    return redirect(url_for('index.advanced')) 
+    return redirect(url_for('index.advanced_website')) 
 
 def favorite_save_as(name):
     if not os.path.exists("favorites/"):
@@ -55,4 +55,4 @@ def favorites_delete():
     for file_name in files:
         if os.path.exists(file_name):
             os.remove(file_name)
-    return redirect(url_for('index.advanced')) 
+    return redirect(url_for('index.advanced_website')) 

@@ -19,24 +19,15 @@ socket.on('errorOccured', function(msg) {
 
 socket.on('status', function(msg) {
     document.getElementById('status').innerHTML = msg.status;
+    document.getElementById('progress').innerHTML = "";
 });
 
-const formData = new FormData(document.querySelector('form'));
-const YoutubeQuery = formData.get('YoutubeQuery');
-alert(YoutubeQuery);
+const url = new URL(window.location.href);
+const searchParams = url.searchParams;
+const YoutubeQuery = searchParams.get('YoutubeQuery');
 
 socket.on('finishedAll', function() {
-    if(document.getElementById('errorContent').style.display == "none")
-    {
-        const formData = new FormData(document.querySelector('form'));
-        const YoutubeQuery = formData.get('YoutubeQuery');
-        window.location.href = '/favorites?name='+encodeURIComponent(YoutubeQuery);
-    }
-    else
-    {
-        document.getElementById('LoadingBar').style.display = "none";
-        document.getElementById('errorContent').innerHTML += "<button id=\"backButton\" onclick=\"window.location.href = '/';\" class=\"btn btn-primary btn-lg\">Continue</button>";
-    }
+    window.location.href = '/favorites?name='+encodeURIComponent(YoutubeQuery);
 });
 
 socket.on('disconnect', function() {

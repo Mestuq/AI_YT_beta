@@ -11,11 +11,11 @@ from PIL import Image
 from routes import videosBP
 
 clean_bp = Blueprint('clean', __name__)
-search_lock = Lock()
+clean_lock = Lock()
 
 @clean_bp.route('/processClean', methods=['POST'])
 def process_clean():
-    if not search_lock.acquire(blocking=False):
+    if clean_lock.locked():
         return render_template('busy.html.j2')
     else:
         delete_columns_with_only = request.form.get('DeleteColumnsWithOnly')
@@ -48,6 +48,8 @@ def get_image():
 
 def clean_data(delete_columns_with_only, delete_rows_with_only, outliner_precise):
     time.sleep(1) # Waiting for client to load the website
+    if not clean_lock.acquire(blocking=False):
+        return
     try:
         socketio.emit('progress', {'data':'Loading Data'}, namespace='/test')
         videosBP.load_videos()
@@ -129,4 +131,4 @@ def clean_data(delete_columns_with_only, delete_rows_with_only, outliner_precise
         socketio.emit('finished', namespace='/test')
     except Exception as e:
         socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
-    search_lock.release()
+    clean_lock.release()

@@ -8,7 +8,7 @@ from routes import channelsBP
 
 videos_bp = Blueprint('videos', __name__)
 video_data = []
-search_lock = Lock()
+videos_lock = Lock()
 
 def load_videos():
     global video_data
@@ -24,7 +24,7 @@ def normalize_text(text): # Tags are distinguished by spaces, so spaces will be 
 
 @videos_bp.route('/processSearchForYoutubeVideos', methods=['POST'])
 def process_search_for_youtube_videos():
-    if not search_lock.acquire(blocking=False):
+    if videos_lock.locked():
         return render_template('busy.html.j2')
     else:
         pages_number = request.form.get('PagesNumber')
@@ -74,9 +74,7 @@ def delete_all_channels():
         for file_name in file_list:
             file_path = os.path.join("downloaded/", file_name)
             if os.path.isfile(file_path):
-                print(file_path)
-                #os.remove(file_path)
-    return redirect(url_for('index.advanced_website')) 
+                os.remove(file_path)
 
 def concat_all_channels():
     dataframes = []
@@ -89,12 +87,14 @@ def concat_all_channels():
                 dataframes.append(df)
     concatenated_df = pd.concat(dataframes, ignore_index=True)
     concatenated_df.to_csv('videos.csv', index=False)
-    return redirect(url_for('index.advanced_website')) 
 
 def search_for_youtube_videos(pages_number, replace_CSV):
+    time.sleep(1) # Waiting for client to load the website
+    if not videos_lock.acquire(blocking=False):
+        return
     if not os.path.exists("downloaded/"):
         os.makedirs("downloaded/")
-    time.sleep(1) # Waiting for client to load the website
+    
     channelsBP.load_channels()
     global video_data
     video_data = []
@@ -126,5 +126,5 @@ def search_for_youtube_videos(pages_number, replace_CSV):
                 except Exception as e:
                     print(f'Error processing URL: {url}')
                     socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
-    search_lock.release()
+    videos_lock.release()
     socketio.emit('finished', namespace='/test')

@@ -1,0 +1,25 @@
+TagsAI v1.2
+- New simplified interface
+- Accuracy tab changes
+    - Multithreading (Parallel accuracy calculating)
+    - Accuracy now calculates MSE
+    - New "Step size" parameter
+    - New "Threads amount" parameter
+- Much more readable source code 
+- Fixed locks
+- Lots of smaller fixes
+
+TagsAI v1.1
+- Standalone version (.exe) of this aplication is available with build-in Qt5 window browser.
+- New look of the website.
+- New "Favorite" tab, for saveing tags results for later.
+- Histogram for training data shows in "Clean data" tab.
+- Improved cleaning process.
+- Information in "process" now shows when occures errors.
+- "Delete previous channels" in "Youtube Query" tab.
+- "Download set" collects data per channel in seperate arrays, not merging them in the one array.
+- Option "Replace existing data" in a "Download set" tab.
+- New "Concat channels" tab, for selecting which channels will be considered in a training data.
+
+TagsAI v1.0
+- First release of the TagsAI.

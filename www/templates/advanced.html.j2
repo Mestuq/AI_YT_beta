@@ -212,10 +212,10 @@
 
             <div class="row">
                 <div class="col-md-6">
-                    <img src="/image?src=ViewsAfter.png" onerror="this.src='{{ url_for('static', filename='empty.png') }}';" alt="Image" class="w-100">
+                    <img src="/image?src=ViewsBefore.png" onerror="this.src='{{ url_for('static', filename='empty.png') }}';" alt="Image" class="w-100">
                 </div>
                 <div class="col-md-6">
-                    <img src="/image?src=ViewsBefore.png" onerror="this.src='{{ url_for('static', filename='empty.png') }}';" alt="Image" class="w-100">
+                    <img src="/image?src=ViewsAfter.png" onerror="this.src='{{ url_for('static', filename='empty.png') }}';" alt="Image" class="w-100">
                 </div>
             </div>
 
@@ -229,9 +229,25 @@
             <form class="row g-2" id="taskForm" action="/processCheckForAccuracy" method="POST">
                 <div class="col-md">
                     <div class="form-floating">
-                        <input placeholder="50" class="form-control form-control-lg" type="number" name="AcceptError" id="AcceptError" value="50" required>
-                        <label for="AcceptError">Error margin:</label>
+                        <input placeholder="50" class="form-control form-control-lg" type="number" name="StepSize" id="StepSize" value="1" required>
+                        <label for="StepSize">Step size:</label>
                     </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input placeholder="50" class="form-control form-control-lg" type="number" name="AcceptedError" id="AcceptedError" value="50" required>
+                        <label for="AcceptedError">Accepted error:</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <select name="ThreadsAmount" class="form-select h-100">
+                        <option value="-1" selected>Max threads</option>
+                        <option value="1">1 thread</option>
+                        <option value="4">4 threads</option>
+                        <option value="8">8 threads</option>
+                        <option value="16">16 threads</option>
+                        <option value="32">32 threads</option>
+                    </select>
                 </div>
                 <div class="col-md">
                     <input class="btn btn-primary btn-lg h-100 w-100" type="submit" value="Calculate error">

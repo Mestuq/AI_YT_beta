@@ -6,7 +6,7 @@ import yt_dlp, csv, os, sys, time
 
 channels_bp = Blueprint('channels', __name__)
 channels = []
-search_lock = Lock()
+channels_lock = Lock()
 progress_info = 0
 
 def load_channels():
@@ -55,10 +55,15 @@ class YtDlpProgress:
             progress_info += 1
             socketio.emit('progress', {'data': f'Downloaded items: {progress_info}'}, namespace='/test')
         pass
+    def warning(self, msg):
+        pass
+    def error(self, msg):
+        socketio.emit('errorOccured',{'errorContent': str(msg)}, namespace='/test')
+        pass
 
 @channels_bp.route('/processSearchForYoutubeChannels', methods=['POST'])
 def process_search_for_youtube_channels():
-    if not search_lock.acquire(blocking=False):
+    if channels_lock.locked():
         return render_template('busy.html.j2')
     else:
         youtube_query = request.form.get('YoutubeQuery')
@@ -69,6 +74,8 @@ def process_search_for_youtube_channels():
 
 def search_for_youtube_channels(youtube_query, pages_number, replace_channel):
     time.sleep(1) # Waiting for client to load the website
+    if not channels_lock.acquire(blocking=False):
+        return
     global progress_info
     progress_info = 0
     global channels
@@ -113,5 +120,5 @@ def search_for_youtube_channels(youtube_query, pages_number, replace_channel):
         print(f"Error occurred: {e}")
         socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
     
-    search_lock.release()
+    channels_lock.release()
     socketio.emit('finished', namespace='/test')

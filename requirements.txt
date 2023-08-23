@@ -9,3 +9,4 @@ matplotlib
 PyQt5
 PyQtWebEngine
 Pillow
+joblib

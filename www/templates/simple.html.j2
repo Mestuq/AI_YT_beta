@@ -16,9 +16,9 @@
     <div class="row mt-5">
         <div class="mx-auto">
             <h1 class="text-center">Your video title:</h1>
-            <form class="row d-flex justify-content-around" action="/processAll" method="POST">
+            <form class="row d-flex justify-content-around" action="/processAll" method="GET">
                 <div class="search">
-                    <input type="text" placeholder="Search" />
+                    <input type="text" name="YoutubeQuery" id="YoutubeQuery" placeholder="Search" />
                     <button type="submit">
                         <i class="material-icons">
                             <svg width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
