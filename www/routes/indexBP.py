@@ -8,7 +8,8 @@ index_bp = Blueprint('index', __name__)
 
 @index_bp.route('/')
 def index_website():
-    return render_template('./simple.html.j2')
+    favorites = favoritesBP.get_favorites()
+    return render_template('./simple.html.j2', favorites=favorites)
 
 @index_bp.route('/advanced', methods=['GET', 'POST'])
 def advanced_website():

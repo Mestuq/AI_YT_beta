@@ -133,3 +133,46 @@ input[type="number"]
 {
     -moz-appearance: textfield; /* Firefox-specific */
 }
+
+/* Search input */
+.search 
+{
+    display: flex;
+    height: 45px;
+    width: fit-content;
+}
+
+.search input[type=text] 
+{
+    width: 600px;
+    padding:20px;
+    height: 100%;
+    border-radius: 20px 0 0 20px;
+    border: 1px solid #ddd;
+}
+
+input:focus 
+{
+    outline: none;
+    border: 1px solid #ddd;
+}
+
+.search button 
+{
+    height: 100%;
+    width: 60px;
+    border-radius: 0 20px 20px 0;
+    border: 1px solid #ddd;
+}
+ 
+.mic 
+{
+    margin-top: 10px;
+}
+
+.material-icons 
+{
+    color: rgb(100, 100, 100);
+    padding: 0 7px;
+    cursor: pointer;
+}

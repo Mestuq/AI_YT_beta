@@ -5,28 +5,49 @@
 {% block content %}
 
 <div class="container">
+    <button class="btn btn-outline-danger" onclick="window.location.href = '/advanced';">More advanced options</button>
     <div class="row">
         <div class="mx-auto text-center">
-            <a href="#YoutubeTags">
+            <a href="#">
                 <img class="img-fluid col-6" src="{{url_for('static', filename='logo.png')}}">
             </a>
         </div>
     </div>
-    <div class="row">
-        <div class="mx-auto borderRound">
-            <h1 class="text-center">Welcome!</h1>
-            <form class="row g-2" action="/processAll" method="POST">
-                <div class="col-md">
-                    <div class="form-floating">
-                        <input placeholder="Cute Cats" class="form-control form-control-lg" type="text" name="YoutubeQuery" id="YoutubeQuery" required>
-                        <label for="YoutubeQuery">Your youtube querry</label>
-                    </div>
-                </div>
-                <div class="col-md">
-                    <input class="btn btn-primary btn-lg w-100 h-100" type="submit" value="Search Channels">
+    <div class="row mt-5">
+        <div class="mx-auto">
+            <h1 class="text-center">Your video title:</h1>
+            <form class="row d-flex justify-content-around" action="/processAll" method="POST">
+                <div class="search">
+                    <input type="text" placeholder="Search" />
+                    <button type="submit">
+                        <i class="material-icons">
+                            <svg width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                            </svg>
+                        </i>
+                    </button>
                 </div>
             </form>
-            <button class="btn btn-primary btn-lg w-100" onclick="window.location.href = '/advanced';">More advanced options</button>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="mx-auto">
+            <h1>History:</h1>
+            {% if favorites %}
+                <ul id="Favorites" class="list-group">
+                    {% for item in favorites %}
+                        {% set encoded_name = item|urlencode %}
+                        <li class="list-group-item">
+                            <a href="favoritesDelete?name={{ encoded_name }} ">
+                                <button type="button" class="btn-close" aria-label="Close"></button> 
+                            </a>
+                            <a href="favorites?name={{ encoded_name }} ">{{ item }}</a>
+                        </li> 
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <h3>You have not saved any favorites yet.</h3>
+            {% endif %}
         </div>
     </div>
 </div>
