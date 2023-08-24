@@ -67,9 +67,9 @@ def check_for_accuracy(step_size, threads_amount, accepted_error):
                     delayed(parallel_loocv)(model, Xval,yval, train_index, test_index, max_splits, accepted_error, step_size, model_nr) for train_index, test_index in loo.split(Xval)
                 )
                 mse = [item[0] for item in result if item[0] is not None]
-                average_mse = sum(mse)/len(mse)
+                average_mse = int(sum(mse)/len(mse))
                 accuracy = [item[1] for item in result if item[1] is not None]
-                average_accuracy = sum(accuracy)/len(accuracy) * 100
+                average_accuracy = round(sum(accuracy)/len(accuracy) * 100,2)
                 if model_nr == 0:
                     result = ["Linear Regression",average_mse, str(average_accuracy)+"%"]
                 if model_nr == 1:

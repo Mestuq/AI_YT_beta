@@ -42,8 +42,7 @@ I prefere to consider both models during choosing tags to paste into my videos, 
 - Random Forest Classifier
 
 6. **Cross-Validation (Accuracy)**
-   I am using LOOCV (Leave-One-Out Cross-Validation). It is slow method, but I prefer this method because our sort of data is very specific (Variables may occur too infrequently and if we split a set into test and training we can get improper results, even more so
-   for information about the owner of the video)
+   Program uses parallel multithreading LOOCV (Leave-One-Out Cross-Validation) and calculates MSE and accuracy (succesfully predicted views, by used tags).
 7. **Suggested tags**
    These models gives us the coefficient (or feature importances) numbers that we can use to predict tags that will give us the most of views. Sorted from the higher impact.
 8. **Save your favorite tags**
