@@ -53,7 +53,7 @@ class YtDlpProgress:
         global progress_info
         if '[download] Downloading item ' in msg:
             progress_info += 1
-            socketio.emit('progress', {'data': f'Downloaded items: {progress_info}'}, namespace='/test')
+            socketio.emit('progress', {'data': f'Pages searched: {progress_info}'}, namespace='/test')
         pass
     def warning(self, msg):
         pass

@@ -1,13 +1,13 @@
 TagsAI v1.2
-- New simplified interface
-- Accuracy tab changes
-    - Multithreading (Parallel accuracy calculating)
-    - Accuracy now calculates MSE
-    - New "Step size" parameter
-    - New "Threads amount" parameter
-- Much more readable source code 
-- Fixed locks
-- Lots of smaller fixes
+- New simplified interface.
+- Accuracy tab changes.
+    - Multithreading. (Parallel accuracy calculating)
+    - Accuracy now calculates MSE.
+    - New "Step size" parameter.
+    - New "Threads amount" parameter.
+- Much more readable source code.
+- Fixed locks.
+- Lots of smaller fixes.
 
 TagsAI v1.1
 - Standalone version (.exe) of this aplication is available with build-in Qt5 window browser.
