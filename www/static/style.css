@@ -26,6 +26,11 @@
     background-color: var(--primary);
 }
 
+.w-660px
+{
+    width: 660px;
+}
+
 .nav-link 
 {
     color: black;
@@ -175,4 +180,17 @@ input:focus
     color: rgb(100, 100, 100);
     padding: 0 7px;
     cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-runnable-track 
+{
+    background: #ddd;
+}
+input[type=range]::-webkit-slider-thumb 
+{
+    background: red;
+}
+input[type=range]:focus::-webkit-slider-thumb  
+{
+    background: red;
 }

@@ -1,12 +1,7 @@
 # TagsAI
 
 ![](https://github.com/Mestuq/AI_YT_test/blob/main/www/static/logo.png)
-
-**Flask (Python) website for Machine Learning Youtube tags.**
-
-1. Write topic of your video
-2. Wait...
-3. Boom! Ready tags to copy, perfect for your videos.
+**Flask (Python) website for Machine Learning Youtube #tags.**
 
 ## Info
 
@@ -17,7 +12,7 @@ Accuracy is poor, because i dont have enaught information to work with. My data 
 
 Because of that I don't think that, there are bad results, considering that the "tags" is not most important indicator of video popularity.
 
-I prefere to consider both models during choosing tags to paste into my videos, because i dont know of how exactly Youtube alghoritm works.
+I prefere to consider both models during choosing tags, because i dont know of how exactly Youtube alghoritm works. It is a pretty good tool to inspire yourself when selecting tags and learning from it.
 
 ## Steps
 
@@ -99,3 +94,12 @@ Website is avalible in http://127.0.0.1:5000/ .
 
 - Currently im not considering "date of uploading" as a predictor.
 - Looking for faster method for downloading Youtube Data. (Currently using yt_dlp, because it is free), but planning Youtube API in the future.
+
+## Disclaimer:
+
+This application is intended for personal and educational use only. By using this application, you agree to the following:
+1. <b>Respect Copyright and Fair Use</b>: You are responsible for ensuring that your use of this application complies with all applicable copyright laws and regulations. This application should not be used for infringing upon the rights of content creators or distributing copyrighted material without authorization.
+2. <b>Compliance with YouTube's Terms of Service</b>: You must adhere to YouTube's Terms of Service and any other policies or guidelines set forth by YouTube. This application is not affiliated with or endorsed by YouTube, and any use of this application to violate YouTube's terms is strictly prohibited.</li>
+3. <b>Responsible Use</b>: Use this application responsibly and considerately. Avoid excessive or abusive downloading or scraping of content from YouTube, as it may lead to IP bans or other restrictions on your access to YouTube.
+4. <b>No Warranty</b>: This application is provided "as is," without any warranties or guarantees. The developers of this application are not responsible for any consequences resulting from your use of this application.
+5. <b>Legal Consequences</b>: Violation of copyright laws, YouTube's terms of service, or any applicable laws and regulations may have legal consequences. You are solely responsible for any legal actions that may arise from your use of this application.

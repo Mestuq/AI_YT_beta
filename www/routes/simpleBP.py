@@ -15,7 +15,8 @@ def process_search_for_youtube_videos():
         return render_template('busy.html.j2')
     else:
         youtube_query = request.args.get('YoutubeQuery')
-        socketio.start_background_task(process_all_tasks, youtube_query)
+        search_pages = request.args.get('SearchPages')
+        socketio.start_background_task(process_all_tasks, youtube_query, int(search_pages))
     return render_template('processAll.html.j2')
 
 def handle_task(status_str, task_func, *args, **kwargs):
@@ -26,14 +27,14 @@ def handle_task(status_str, task_func, *args, **kwargs):
         print(f"Error occurred: {e}")
         socketio.emit('errorOccured',{'errorContent': str(e)}, namespace='/test')
 
-def process_all_tasks(youtube_query):
+def process_all_tasks(youtube_query, search_pages):
     time.sleep(1) # Waiting for client to load the website
     if not simple_lock.acquire(blocking=False):
         return
     # Default settings:
-    pages_number_channels = 100
+    pages_number_channels = search_pages # DEFAULT 50
     replace_channel = "on"
-    pages_number_videos = 100
+    pages_number_videos = search_pages # DEFAULT 50
     replace_CSV = "on"
     delete_columns_with_only = 4
     delete_rows_with_only = 2

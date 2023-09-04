@@ -4,6 +4,29 @@
 
 {% block content %}
 
+<div class="modal fade" id="Modal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ModalLabel">Disclaimer:</h5>
+      </div>
+      <div class="modal-body">
+        This application is intended for personal and educational use only. By using this application, you agree to the following:<br />
+        <ol>
+            <li><b>Respect Copyright and Fair Use</b>: You are responsible for ensuring that your use of this application complies with all applicable copyright laws and regulations. This application should not be used for infringing upon the rights of content creators or distributing copyrighted material without authorization.</li>
+            <li><b>Compliance with YouTube's Terms of Service</b>: You must adhere to YouTube's Terms of Service and any other policies or guidelines set forth by YouTube. This application is not affiliated with or endorsed by YouTube, and any use of this application to violate YouTube's terms is strictly prohibited.</li>
+            <li><b>Responsible Use</b>: Use this application responsibly and considerately. Avoid excessive or abusive downloading or scraping of content from YouTube, as it may lead to IP bans or other restrictions on your access to YouTube.</li>
+            <li><b>No Warranty</b>: This application is provided "as is," without any warranties or guarantees. The developers of this application are not responsible for any consequences resulting from your use of this application.</li>
+            <li><b>Legal Consequences</b>: Violation of copyright laws, YouTube's terms of service, or any applicable laws and regulations may have legal consequences. You are solely responsible for any legal actions that may arise from your use of this application.</li>
+        </ol>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accept</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container">
     <button class="btn btn-outline-danger" onclick="window.location.href = '/advanced';">More advanced options</button>
     <div class="row">
@@ -16,16 +39,24 @@
     <div class="row mt-5">
         <div class="mx-auto">
             <h1 class="text-center">Your video title:</h1>
-            <form class="row d-flex justify-content-around" action="/processAll" method="GET">
-                <div class="search">
-                    <input type="text" name="YoutubeQuery" id="YoutubeQuery" placeholder="Search tags"/>
-                    <button type="submit">
-                        <i class="material-icons">
-                            <svg width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
-                            </svg>
-                        </i>
-                    </button>
+            <form class="row" action="/processAll" method="GET">
+                <div class="d-flex justify-content-around">
+                    <div class="search">
+                        <input type="text" name="YoutubeQuery" id="YoutubeQuery" placeholder="Search tags"/>
+                        <button type="submit">
+                            <i class="material-icons">
+                                <svg width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                                </svg>
+                            </i>
+                        </button>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-around mt-5">
+                    <div class="w-660px">
+                        <input type="range" class="form-range" min="30" max="70" value="50" id="SearchPages" name="SearchPages">
+                        <label for="searchPages" class="form-label text-center w-100">Number of pages to explore: <span id="ValueOfSearch">50 pages</span></label>
+                    </div>
                 </div>
             </form>
         </div>
@@ -51,5 +82,20 @@
         </div>
     </div>
 </div>
+
+<script>
+    var value = document.querySelector("#ValueOfSearch");
+    var input = document.querySelector("#SearchPages");
+
+    value.textContent = input.value;
+    input.addEventListener("input", (event) => 
+    {
+        value.textContent = event.target.value;
+    });
+    
+    $(window).on('load', function() {
+        $('#Modal').modal('show');
+    });
+</script>
 
 {% endblock %}
