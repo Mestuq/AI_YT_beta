@@ -1,10 +1,9 @@
-from flask import Blueprint,Flask,render_template, request, jsonify, url_for, redirect
-from flask_socketio import SocketIO
+from flask import Blueprint, render_template, request, jsonify, url_for, redirect
 from app import app, socketio
 import pandas as pd
 import scipy as sc
 import numpy as np
-from threading import Thread, Lock
+from threading import Lock
 import time
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
@@ -27,8 +26,8 @@ def get_tags(amount):
     if not tags_lock.acquire(blocking=False):
         return
     data = pd.read_csv('TrainingData.csv')
-    Xval = data.iloc[:, :-1]
-    yval = data.iloc[:, -1].values.ravel()
+    Xval = data.iloc[:, :-2] # [...,'Views','Upload-date']
+    yval = data.iloc[:, -2].values.ravel()
 
     # Count the number of occurrences of each tag
     variable_counts = Xval.astype(bool).sum(axis=0).reset_index()

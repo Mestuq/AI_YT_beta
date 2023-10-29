@@ -1,9 +1,4 @@
-from flask import Blueprint,Flask,render_template, request, jsonify, url_for, redirect
-from flask_socketio import SocketIO
-from app import app, socketio
-import pandas as pd
-import scipy as sc
-import numpy as np
+from flask import Blueprint, render_template, request, url_for, redirect
 import os, shutil
 from routes import indexBP
 

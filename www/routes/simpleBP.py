@@ -1,10 +1,9 @@
 
-from flask import Blueprint,Flask,render_template, request, jsonify, url_for, redirect
-from flask_socketio import SocketIO
-from app import app, socketio
-from threading import Thread, Lock
+from flask import Blueprint, render_template, request
+from app import socketio
+from threading import Lock
 import time
-from routes import videosBP, channelsBP, cleanBP, tagsBP, accuracyBP, favoritesBP
+from routes import videosBP, channelsBP, cleanBP, tagsBP, accuracyBP, favoritesBP, timelineBP
 
 simple_bp = Blueprint('simple', __name__)
 simple_lock = Lock()
@@ -51,6 +50,7 @@ def process_all_tasks(youtube_query, search_pages):
     handle_task("Cleaning data", cleanBP.clean_data, delete_columns_with_only, delete_rows_with_only, outliner_precise)
     handle_task("Checking accuracy", accuracyBP.check_for_accuracy, step_size, threads_amount, accepted_error)
     handle_task("Fetching tags", tagsBP.get_tags, amount_of_tags)
+    handle_task("Generating timeline", timelineBP.generate_timeline)
     handle_task("Saveing results", favoritesBP.favorite_save_as, youtube_query)
     socketio.emit('finishedAll', namespace='/test')
     simple_lock.release()

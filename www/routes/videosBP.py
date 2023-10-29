@@ -1,7 +1,6 @@
-from flask import Blueprint,Flask,render_template, request, jsonify, url_for, redirect
-from flask_socketio import SocketIO
+from flask import Blueprint, render_template, request, url_for, redirect
 from app import socketio
-from threading import Thread, Lock
+from threading import Lock
 import pandas as pd
 import yt_dlp, csv, os, time
 from routes import channelsBP
@@ -118,6 +117,7 @@ def search_for_youtube_videos(pages_number, replace_CSV):
                                     'Title': video.get('title', '').lower(),
                                     'Views': video.get('view_count', ''),
                                     'Tags': normalize_text(','.join(["(tag)" + tag for tag in video.get('tags', [])])),
+                                    'Date': video.get('upload_date'),
                                     }
                                 video_data.append(video_info)
                                 user_videos.append(video_info)

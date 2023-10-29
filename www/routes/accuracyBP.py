@@ -1,15 +1,13 @@
-from flask import Blueprint,Flask,render_template, request, jsonify, url_for, redirect
-from flask_socketio import SocketIO
-from app import app, socketio
+from flask import Blueprint, render_template, request
+from app import socketio
 from sklearn.model_selection import LeaveOneOut
-from sklearn.metrics import accuracy_score, mean_squared_error
+from sklearn.metrics import mean_squared_error
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from threading import Thread, Lock
+from threading import Lock
 from joblib import Parallel, delayed
 import pandas as pd
 import csv, time
-import numpy as np
 
 accuracy_bp = Blueprint('accuracy', __name__)
 accuracy_lock = Lock()
@@ -49,8 +47,8 @@ def check_for_accuracy(step_size, threads_amount, accepted_error):
     loo = LeaveOneOut()
     data = pd.read_csv('TrainingData.csv')
     data = data.sample(frac=1)  # Shuffles all rows
-    Xval = data.iloc[:, :-1]
-    yval = data.iloc[:, -1].values.ravel()
+    Xval = data.iloc[:, :-2] # [...,'Views','Upload-date']
+    yval = data.iloc[:, -2].values.ravel()
     try:
         # List of models
         models = {

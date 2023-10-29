@@ -1,11 +1,10 @@
-from flask import Blueprint,Flask,render_template, request, jsonify, url_for, redirect, send_file, Response
-from flask_socketio import SocketIO
-from app import app, socketio
+from flask import Blueprint, render_template, request, Response
+from app import socketio
 import pandas as pd
 import matplotlib.pyplot as plt
 import scipy as sc
 import numpy as np
-from threading import Thread, Lock
+from threading import Lock
 import os, time, io
 from PIL import Image
 from routes import videosBP

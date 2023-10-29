@@ -1,5 +1,5 @@
 from app import app, socketio
-from routes import indexBP, videosBP, channelsBP, cleanBP, tagsBP, accuracyBP, favoritesBP, simpleBP
+from routes import indexBP, videosBP, channelsBP, cleanBP, tagsBP, accuracyBP, favoritesBP, simpleBP, timelineBP
 
 app.register_blueprint(indexBP.index_bp)
 app.register_blueprint(videosBP.videos_bp)
@@ -9,6 +9,7 @@ app.register_blueprint(tagsBP.tags_bp)
 app.register_blueprint(accuracyBP.accuracy_bp)
 app.register_blueprint(favoritesBP.favorites_bp)
 app.register_blueprint(simpleBP.simple_bp)
+app.register_blueprint(timelineBP.timeline_bp)
 
 if __name__ == '__main__':
     app.debug = True

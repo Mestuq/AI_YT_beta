@@ -1,8 +1,7 @@
-from flask import Blueprint,Flask,render_template, request, jsonify, url_for, redirect
-from flask_socketio import SocketIO
-from app import app, socketio
-from threading import Thread, Lock
-import yt_dlp, csv, os, sys, time
+from flask import Blueprint, render_template, request, jsonify
+from app import socketio
+from threading import Lock
+import yt_dlp, csv, time
 
 channels_bp = Blueprint('channels', __name__)
 channels = []

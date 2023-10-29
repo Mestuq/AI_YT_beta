@@ -1,6 +1,5 @@
-from flask import Blueprint,Flask,render_template, request, jsonify, url_for, redirect
-from flask_socketio import SocketIO
-from app import app, socketio
+from flask import Blueprint, render_template
+from app import socketio
 import csv
 from routes import videosBP,channelsBP,favoritesBP
 
